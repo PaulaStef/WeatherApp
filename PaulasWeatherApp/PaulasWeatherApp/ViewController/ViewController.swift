@@ -44,8 +44,8 @@ class ViewController: UITabBarController {
             do {
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
                 self.countryCityName = decoded.timezone
-                //self.currentWeather = decoded.current
-                self.hourlyWeatherList = decoded.hourly
+                self.currentWeather = decoded.current
+                //self.hourlyWeatherList = decoded.hourly
                 //self.dailyWeatherList = decoded.daily
                 DispatchQueue.main.async { [self] in
                     print(decoded.timezone)
