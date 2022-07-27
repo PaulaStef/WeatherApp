@@ -9,8 +9,8 @@ import UIKit
 
 class ViewController: UITabBarController {
     var countryCityName: String?
-    var currentWeather: Current?
-    var hourlyWeatherList = [Current]()
+    var currentWeather: WeatherDetails?
+    var hourlyWeatherList = [WeatherDetails]()
     var dailyWeatherList = [Daily]()
     
     override func viewDidLoad() {
@@ -32,21 +32,21 @@ class ViewController: UITabBarController {
         }
         
         self.tabBar.tintColor = .black
-        
-        gettingWeatherData(lat: 33.44, lon: -94.04)
+        let time = Int(NSDate().timeIntervalSince1970)
+        gettingWeatherData(lat: 33.44, lon: -94.04, time: time)
     }
     
-    func gettingWeatherData(lat: Float, lon: Float) {
+    func gettingWeatherData(lat: Float, lon: Float, time: Int) {
         dailyWeatherList.removeAll()
         hourlyWeatherList.removeAll()
-        APIModel.getWeatherData(lat: lat, lon: lon) { data, response, error in
+        WeatherService.getWeatherData(lat: lat, lon: lon, time: time) { data, response, error in
             let decoder = JSONDecoder()
             do {
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
                 self.countryCityName = decoded.timezone
-                self.currentWeather = decoded.current
+                //self.currentWeather = decoded.current
                 self.hourlyWeatherList = decoded.hourly
-                self.dailyWeatherList = decoded.daily
+                //self.dailyWeatherList = decoded.daily
                 DispatchQueue.main.async { [self] in
                     print(decoded.timezone)
                     print(decoded)
