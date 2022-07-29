@@ -16,30 +16,32 @@ class ViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+    
         self.setViewControllers([WeatherVC ,MetricsVC ,SettingsVC ], animated: false)
         
         guard let items = self.tabBar.items else { return }
         
-        let images = ["clock", "calendar", "gear.circle"]
+        let images = ["clock", "calendar"]
         
-        for x in 0...2 {
+        for x in 0...1 {
             items[x].image = UIImage(systemName: images[x])
         }
+        
+        items[2].image = UIImage(named: "settings")
         
         self.tabBar.tintColor = .black
         let time = Int(NSDate().timeIntervalSince1970)
         gettingWeatherData(lat: 33.44, lon: -94.04, time: time)
     }
-    
+        
     func gettingWeatherData(lat: Float, lon: Float, time: Int) {
         WeatherService.getWeatherData(lat: lat, lon: lon, time: time) { data, response, error in
             let decoder = JSONDecoder()
             do {
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
                 DispatchQueue.main.async { [self] in
-                    print(decoded.timezone)
-                    WeatherVC.setCurrentWeatherUI(decoded)
+                    WeatherVC.activityIndicator.stopAnimating()
+                    WeatherVC.setCurrentWeatherData(decoded)
                 }
             } catch {
                 print("Failed to decode JSON \(error)")
