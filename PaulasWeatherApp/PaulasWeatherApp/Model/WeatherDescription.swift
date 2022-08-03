@@ -13,13 +13,13 @@ struct WeatherDataModel: Codable {
     let timezone: String
     let timezoneOffset: Int
     let current: WeatherDetails
-    //let hourly: [WeatherDetails]
+    let hourly: [WeatherDetails]
     //let daily: [Daily]
     
     enum CodingKeys: String, CodingKey {
         case lat, lon, timezone
         case timezoneOffset = "timezone_offset"
-        case current
+        case current, hourly
     }
 }
 
