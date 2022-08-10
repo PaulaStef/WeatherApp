@@ -8,68 +8,72 @@
 import UIKit
 
 class ViewController: UITabBarController {
-    var countryCityName: String?
-    var currentWeather: WeatherDetails?
-    var hourlyWeatherList = [WeatherDetails]()
-    var dailyWeatherList = [Daily]()
+        
+    private let weatherVC = CurrentWeatherViewController()
+    private let metricsVC = WeatherReportsViewController()
+    private let settingsVC = SettingsViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
-        let WeatherVC = CurrentWeatherViewController()
-        let MetricsVC = WeatherReportsViewController()
-        let SettingsVC = SettingsViewController()
-        
-        self.setViewControllers([WeatherVC ,MetricsVC ,SettingsVC ], animated: false)
-        
-        guard let items = self.tabBar.items else { return }
-        
-        let images = ["clock", "calendar", "gear.circle"]
-        
-        for x in 0...2 {
-            items[x].image = UIImage(systemName: images[x])
-        }
-<<<<<<< Updated upstream
-=======
-        items[2].image = Singleton.sharedInstance.resizeImage(image: UIImage(named: "settings")!, targetSize: CGSize(width: 30, height: 30))
->>>>>>> Stashed changes
-        
-        self.tabBar.tintColor = .black
+        setTabBar()
         let time = Int(NSDate().timeIntervalSince1970)
-        gettingWeatherData(lat: 46.77, lon: 23.58, time: time)
+        getWeatherData(lat: 33.44, lon: -94.04, time: time)
     }
     
-    func gettingWeatherData(lat: Float, lon: Float, time: Int) {
-        dailyWeatherList.removeAll()
-        hourlyWeatherList.removeAll()
+    private func setTabBar() {
+        setViewControllers([weatherVC, metricsVC, settingsVC ], animated: false)
+        
+        guard let settingsImage = UIImage(named: "settings") else { return }
+        let size = CGSize(width: 35, height: 35)
+        guard let items = tabBar.items else { return }
+        let images = [UIImage(systemName: "clock"), UIImage(systemName:"calendar"), resizeImage(image: settingsImage, targetSize: size)]
+        for (index, item) in items.enumerated() {
+            item.image = images[index]
+        }
+        
+        tabBar.tintColor = .black
+        self.tabBar.tintColor = .black
+    }
+        
+    private func getWeatherData(lat: Float, lon: Float, time: Int) {
         WeatherService.getWeatherData(lat: lat, lon: lon, time: time) { data, response, error in
             let decoder = JSONDecoder()
             guard let data = data else {
                 return
             }
             do {
-<<<<<<< Updated upstream
-                let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
-                self.countryCityName = decoded.timezone
-                self.currentWeather = decoded.current
-                //self.hourlyWeatherList = decoded.hourly
-                //self.dailyWeatherList = decoded.daily
-                DispatchQueue.main.async { [self] in
-                    print(decoded.timezone)
-                    print(decoded)
-=======
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    WeatherVC.activityIndicator.stopAnimating()
-                    WeatherVC.setCurrentWeatherData(decoded)
-                    Singleton.sharedInstance.hourlyWeather = decoded.hourly
->>>>>>> Stashed changes
+                    //weatherVC.activityIndicator.stopAnimating()
+                    //weatherVC.setCurrentWeatherData(decoded)
+                    metricsVC.setHourlyData(hourlyWeather: decoded.hourly)
                 }
             } catch {
                 print("Failed to decode JSON \(error)")
             }
         }
     }
+    
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        let ratio = min(widthRatio, heightRatio)
+        let newSize = CGSize(width: size.width * ratio,  height: size.height * ratio)
+        
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+     
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        
+        guard let newImage = UIGraphicsGetImageFromCurrentImageContext() else
+        {
+            return image
+        }
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
 }
-

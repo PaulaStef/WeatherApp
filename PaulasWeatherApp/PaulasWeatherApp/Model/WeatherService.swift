@@ -20,7 +20,7 @@ class WeatherService {
         task.resume()
     }
     
-    static func gettingWeatherIcon(iconKey: String, completionHandler:@escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
+    static func getWeatherIcon(iconKey: String, completionHandler:@escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
         guard let url = URL(string: "http://openweathermap.org/img/wn/\(iconKey)@2x.png") else {
             return
         }
