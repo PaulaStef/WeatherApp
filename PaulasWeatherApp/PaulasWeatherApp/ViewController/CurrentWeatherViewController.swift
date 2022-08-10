@@ -8,44 +8,37 @@
 import UIKit
 
 class CurrentWeatherViewController: UIViewController {
+        
+    private let tempLabel = UILabel()
+    private let sunriseLabel = UILabel()
+    private let sunsetLabel = UILabel()
     
-    var tempLabel: UILabel = UILabel()
-    var sunriseLabel: UILabel = UILabel()
-    var sunsetLabel: UILabel = UILabel()
+    private var sunsetString = NSMutableAttributedString()
+    private var sunriseString = NSMutableAttributedString()
     
     let activityIndicator = UIActivityIndicatorView(style: .large)
     
-    var sunriseString: NSMutableAttributedString = {
-        let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
-        let sunriseAttachment = NSTextAttachment()
-        sunriseAttachment.image = UIImage(systemName: "sunrise")
-        sunriseAttachment.bounds = iconsSize
-        let atr = NSMutableAttributedString(attachment: sunriseAttachment)
-        return atr
-    }()
-    
-    var sunsetString: NSMutableAttributedString = {
-        let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
-        let sunsetAttachment = NSTextAttachment()
-        sunsetAttachment.image = UIImage(systemName: "sunset")
-        sunsetAttachment.bounds = iconsSize
-        let atr = NSMutableAttributedString(attachment: sunsetAttachment)
-        return atr
-    }()
-   
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        self.view.addSubview(activityIndicator)
+        setActivityIndicator()
         
-        activityIndicator.startAnimating()
-        setCurrentWeatherViews()
+        sunsetString = createString(for: "sunset")
+        sunriseString = createString(for: "sunrise")
+        
+        setTempLabel()
+        setSunriseLabel()
+        setSunsetLabel()
         view.backgroundColor = .systemRed
     }
     
-    func setCurrentWeatherViews(){
+    private func setActivityIndicator() {
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+    }
+    
+    private func setTempLabel() {
         
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
         tempLabel.textAlignment = .center
@@ -55,14 +48,15 @@ class CurrentWeatherViewController: UIViewController {
         tempLabel.backgroundColor = .clear
         tempLabel.sizeToFit()
         
-        sunriseLabel.translatesAutoresizingMaskIntoConstraints = false
-        sunriseLabel.textAlignment = .center
-        sunriseLabel.font = .systemFont(ofSize: 12)
-        sunriseLabel.textColor = .black
-        sunriseLabel.backgroundColor = .clear
-        sunriseLabel.attributedText = sunriseString
-        sunriseLabel.sizeToFit()
+        view.addSubview(tempLabel)
         
+        NSLayoutConstraint.activate([
+            tempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            tempLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -70),
+        ])
+    }
+    
+    private func setSunsetLabel() {
         sunsetLabel.translatesAutoresizingMaskIntoConstraints = false
         sunsetLabel.textAlignment = .center
         sunsetLabel.font = .systemFont(ofSize: 12)
@@ -71,41 +65,51 @@ class CurrentWeatherViewController: UIViewController {
         sunsetLabel.attributedText = sunsetString
         sunsetLabel.sizeToFit()
         
-        self.view.addSubview(tempLabel)
-        self.view.addSubview(sunsetLabel)
-        self.view.addSubview(sunriseLabel)
+        view.addSubview(sunsetLabel)
         
         NSLayoutConstraint.activate([
-            tempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            tempLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -70),
-            
-            sunriseLabel.leadingAnchor.constraint(equalTo: tempLabel.leadingAnchor),
-            sunriseLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor),
-            
             sunsetLabel.leadingAnchor.constraint(equalTo: sunriseLabel.trailingAnchor,constant: 10),
             sunsetLabel.trailingAnchor.constraint(equalTo: tempLabel.trailingAnchor),
-            sunsetLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor),
-            
-            ])
+            sunsetLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor)
+        ])
     }
     
-    func setCurrentWeatherData(_ data : WeatherDataModel) {
+    private func setSunriseLabel() {
+        sunriseLabel.translatesAutoresizingMaskIntoConstraints = false
+        sunriseLabel.textAlignment = .center
+        sunriseLabel.font = .systemFont(ofSize: 12)
+        sunriseLabel.textColor = .black
+        sunriseLabel.backgroundColor = .clear
+        sunriseLabel.attributedText = sunriseString
+        sunriseLabel.sizeToFit()
+        view.addSubview(sunriseLabel)
+        
+        NSLayoutConstraint.activate([
+            sunriseLabel.leadingAnchor.constraint(equalTo: tempLabel.leadingAnchor),
+            sunriseLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor)
+        ])
+    }
+    
+     func setCurrentWeatherData(_ data : WeatherDataModel) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a"
         
         tempLabel.text = "\(data.current.temp)  °C"
-        guard let sunset = data.current.sunset else { return }
-        guard let sunrise = data.current.sunrise else { return }
+        guard let sunset = data.current.sunset, let sunrise = data.current.sunrise  else { return }
         
         sunsetString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(sunset))) ))
         sunsetLabel.attributedText = sunsetString
         
         sunriseString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970:Double(sunrise)))))
         sunriseLabel.attributedText = sunriseString
-
-        
-        
-       
     }
     
+    private func createString(for name: String) ->NSMutableAttributedString {
+        let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
+        let imageAttachment = NSTextAttachment()
+        imageAttachment.image = UIImage(systemName: name)
+        imageAttachment.bounds = iconsSize
+        let atr = NSMutableAttributedString(attachment: imageAttachment)
+        return atr
+    }
 }

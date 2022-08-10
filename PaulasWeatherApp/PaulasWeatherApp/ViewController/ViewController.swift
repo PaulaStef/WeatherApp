@@ -8,46 +8,47 @@
 import UIKit
 
 class ViewController: UITabBarController {
-    
-    let WeatherVC = CurrentWeatherViewController()
-    let MetricsVC = WeatherReportsViewController()
-    let SettingsVC = SettingsViewController()
+        
+    private let weatherVC = CurrentWeatherViewController()
+    private let metricsVC = WeatherReportsViewController()
+    private let settingsVC = SettingsViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setTabBar()
+        let time = Int(NSDate().timeIntervalSince1970)
+        getWeatherData(lat: 33.44, lon: -94.04, time: time)
+    }
     
-        self.setViewControllers([WeatherVC ,MetricsVC ,SettingsVC ], animated: false)
+    private func setTabBar() {
+        setViewControllers([weatherVC, metricsVC, settingsVC ], animated: false)
         
-        guard let items = self.tabBar.items else { return }
+        guard let items = tabBar.items else { return }
+        let images = [UIImage(systemName: "clock"), UIImage(systemName:"calendar"), UIImage(named: "settings")]
         
-        let images = ["clock", "calendar"]
-        
-        for x in 0...1 {
-            items[x].image = UIImage(systemName: images[x])
+        for (index, item) in items.enumerated() {
+            item.image = images[index]
         }
-        
-        items[2].image = UIImage(named: "settings")
+        tabBar.tintColor = .black
         
         self.tabBar.tintColor = .black
-        let time = Int(NSDate().timeIntervalSince1970)
-        gettingWeatherData(lat: 33.44, lon: -94.04, time: time)
     }
         
-    func gettingWeatherData(lat: Float, lon: Float, time: Int) {
+    private func getWeatherData(lat: Float, lon: Float, time: Int) {
         WeatherService.getWeatherData(lat: lat, lon: lon, time: time) { data, response, error in
             let decoder = JSONDecoder()
+            guard let data = data else {
+                return
+            }
             do {
-                let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
+                let decoded = try decoder.decode(WeatherDataModel.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    WeatherVC.activityIndicator.stopAnimating()
-                    WeatherVC.setCurrentWeatherData(decoded)
+                    weatherVC.activityIndicator.stopAnimating()
+                    weatherVC.setCurrentWeatherData(decoded)
                 }
             } catch {
                 print("Failed to decode JSON \(error)")
             }
         }
     }
-
 }
-
