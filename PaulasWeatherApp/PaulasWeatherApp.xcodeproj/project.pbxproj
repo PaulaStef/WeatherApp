@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F3A17BF2898FE3800915D8E /* HourlyWeatherDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A17BE2898FE3800915D8E /* HourlyWeatherDetailsCell.swift */; };
 		4F63CEF5288FD6EE008CAA26 /* WeatherDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */; };
 		4F6E90B2288EBA1800F8317F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90B1288EBA1800F8317F /* AppDelegate.swift */; };
 		4F6E90B4288EBA1800F8317F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90B3288EBA1800F8317F /* SceneDelegate.swift */; };
@@ -22,12 +21,8 @@
 		4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E4288EC66700F8317F /* SettingsViewController.swift */; };
 		4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */; };
 		4F98DA682890242500E63EAA /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F98DA672890242500E63EAA /* WeatherService.swift */; };
-<<<<<<< Updated upstream
-=======
-		4FB2B23B2897BC500009FFC3 /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB2B23A2897BC500009FFC3 /* Singleton.swift */; };
 		4FB2B23D289805180009FFC3 /* HourlyWeatherDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */; };
-		4FDEB96C2893C5B4004A339C /* WeatherIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */; };
->>>>>>> Stashed changes
+		4FF4F25028A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +43,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4F3A17BE2898FE3800915D8E /* HourlyWeatherDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsCell.swift; sourceTree = "<group>"; };
 		4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDescription.swift; sourceTree = "<group>"; };
 		4F6E90AE288EBA1800F8317F /* PaulasWeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaulasWeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F6E90B1288EBA1800F8317F /* AppDelegate.swift */ = {isa = PBXFileReference; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,12 +61,9 @@
 		4F6E90E4288EC66700F8317F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherReportsViewController.swift; sourceTree = "<group>"; };
 		4F98DA672890242500E63EAA /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
-<<<<<<< Updated upstream
-=======
-		4FB2B23A2897BC500009FFC3 /* Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
 		4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsViewController.swift; sourceTree = "<group>"; };
 		4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIcons.swift; sourceTree = "<group>"; };
->>>>>>> Stashed changes
+		4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,11 +96,7 @@
 			children = (
 				4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */,
 				4F98DA672890242500E63EAA /* WeatherService.swift */,
-<<<<<<< Updated upstream
-=======
 				4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */,
-				4FB2B23A2897BC500009FFC3 /* Singleton.swift */,
->>>>>>> Stashed changes
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -137,6 +124,7 @@
 		4F6E90B0288EBA1800F8317F /* PaulasWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				4FF4F24E28A3961800B7D3F1 /* View */,
 				4F63CEF3288FD69B008CAA26 /* Model */,
 				4F6E90E1288EC62000F8317F /* ViewController */,
 				4F6E90B1288EBA1800F8317F /* AppDelegate.swift */,
@@ -178,17 +166,14 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
-<<<<<<< Updated upstream
-=======
-		4FDEB9682893BBFA004A339C /* View */ = {
+		4FF4F24E28A3961800B7D3F1 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4F3A17BE2898FE3800915D8E /* HourlyWeatherDetailsCell.swift */,
+				4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
->>>>>>> Stashed changes
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -320,17 +305,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< Updated upstream
-=======
 				4FB2B23D289805180009FFC3 /* HourlyWeatherDetailsViewController.swift in Sources */,
->>>>>>> Stashed changes
 				4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */,
-				4F3A17BF2898FE3800915D8E /* HourlyWeatherDetailsCell.swift in Sources */,
+				4FF4F25028A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift in Sources */,
 				4F6E90B6288EBA1800F8317F /* ViewController.swift in Sources */,
 				4F6E90E3288EC63A00F8317F /* CurrentWeatherViewController.swift in Sources */,
 				4F6E90B2288EBA1800F8317F /* AppDelegate.swift in Sources */,
 				4F98DA682890242500E63EAA /* WeatherService.swift in Sources */,
-				4FB2B23B2897BC500009FFC3 /* Singleton.swift in Sources */,
 				4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */,
 				4F6E90B4288EBA1800F8317F /* SceneDelegate.swift in Sources */,
 				4F63CEF5288FD6EE008CAA26 /* WeatherDescription.swift in Sources */,
@@ -510,6 +491,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43PMLR7967;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PaulasWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -537,6 +519,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43PMLR7967;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PaulasWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
