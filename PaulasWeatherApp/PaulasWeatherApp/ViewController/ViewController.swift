@@ -21,8 +21,7 @@ class ViewController: UITabBarController {
     }
     
     private func setTabBar() {
-        setViewControllers([weatherVC, metricsVC, settingsVC ], animated: false)
-        
+        setViewControllers([weatherVC, metricsVC, settingsVC], animated: false)
         guard let items = tabBar.items else { return }
         let images = [UIImage(systemName: "clock"), UIImage(systemName:"calendar"), UIImage(named: "settings")]
         
@@ -30,7 +29,6 @@ class ViewController: UITabBarController {
             item.image = images[index]
         }
         tabBar.tintColor = .black
-        
         self.tabBar.tintColor = .black
     }
         
@@ -43,7 +41,6 @@ class ViewController: UITabBarController {
             do {
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    weatherVC.activityIndicator.stopAnimating()
                     weatherVC.setCurrentWeatherData(decoded)
                 }
             } catch {

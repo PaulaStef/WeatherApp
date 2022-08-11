@@ -21,8 +21,6 @@
 		4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E4288EC66700F8317F /* SettingsViewController.swift */; };
 		4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */; };
 		4F98DA682890242500E63EAA /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F98DA672890242500E63EAA /* WeatherService.swift */; };
-		4FDEB96A2893BC3D004A339C /* HourlyWeatherCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDEB9692893BC3D004A339C /* HourlyWeatherCollectionViewCell.swift */; };
-		4FDEB96C2893C5B4004A339C /* WeatherIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,8 +59,6 @@
 		4F6E90E4288EC66700F8317F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherReportsViewController.swift; sourceTree = "<group>"; };
 		4F98DA672890242500E63EAA /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
-		4FDEB9692893BC3D004A339C /* HourlyWeatherCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherCollectionViewCell.swift; sourceTree = "<group>"; };
-		4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIcons.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +91,6 @@
 			children = (
 				4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */,
 				4F98DA672890242500E63EAA /* WeatherService.swift */,
-				4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -123,7 +118,6 @@
 		4F6E90B0288EBA1800F8317F /* PaulasWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
-				4FDEB9682893BBFA004A339C /* View */,
 				4F63CEF3288FD69B008CAA26 /* Model */,
 				4F6E90E1288EC62000F8317F /* ViewController */,
 				4F6E90B1288EBA1800F8317F /* AppDelegate.swift */,
@@ -162,14 +156,6 @@
 				4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */,
 			);
 			path = ViewController;
-			sourceTree = "<group>";
-		};
-		4FDEB9682893BBFA004A339C /* View */ = {
-			isa = PBXGroup;
-			children = (
-				4FDEB9692893BC3D004A339C /* HourlyWeatherCollectionViewCell.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,7 +289,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4FDEB96A2893BC3D004A339C /* HourlyWeatherCollectionViewCell.swift in Sources */,
 				4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */,
 				4F6E90B6288EBA1800F8317F /* ViewController.swift in Sources */,
 				4F6E90E3288EC63A00F8317F /* CurrentWeatherViewController.swift in Sources */,
@@ -312,7 +297,6 @@
 				4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */,
 				4F6E90B4288EBA1800F8317F /* SceneDelegate.swift in Sources */,
 				4F63CEF5288FD6EE008CAA26 /* WeatherDescription.swift in Sources */,
-				4FDEB96C2893C5B4004A339C /* WeatherIcons.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

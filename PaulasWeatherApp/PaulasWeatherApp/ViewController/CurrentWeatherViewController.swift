@@ -8,7 +8,7 @@
 import UIKit
 
 class CurrentWeatherViewController: UIViewController {
-        
+    
     private let tempLabel = UILabel()
     private let sunriseLabel = UILabel()
     private let sunsetLabel = UILabel()
@@ -16,7 +16,7 @@ class CurrentWeatherViewController: UIViewController {
     private var sunsetString = NSMutableAttributedString()
     private var sunriseString = NSMutableAttributedString()
     
-    let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +35,9 @@ class CurrentWeatherViewController: UIViewController {
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
         view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
     }
     
     private func setTempLabel() {
-        
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
         tempLabel.textAlignment = .center
         tempLabel.font = .systemFont(ofSize: 36)
@@ -90,26 +88,28 @@ class CurrentWeatherViewController: UIViewController {
         ])
     }
     
-     func setCurrentWeatherData(_ data : WeatherDataModel) {
+    func setCurrentWeatherData(_ data: WeatherDataModel) {
+        activityIndicator.startAnimating()
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a"
-        
         tempLabel.text = "\(data.current.temp)  °C"
         guard let sunset = data.current.sunset, let sunrise = data.current.sunrise  else { return }
-        
         sunsetString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(sunset))) ))
         sunsetLabel.attributedText = sunsetString
-        
-        sunriseString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970:Double(sunrise)))))
+        sunriseString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(sunrise)))))
         sunriseLabel.attributedText = sunriseString
+        
+        activityIndicator.stopAnimating()
     }
     
-    private func createString(for name: String) ->NSMutableAttributedString {
+    private func createString(for name: String) -> NSMutableAttributedString {
         let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
         let imageAttachment = NSTextAttachment()
         imageAttachment.image = UIImage(systemName: name)
         imageAttachment.bounds = iconsSize
         let atr = NSMutableAttributedString(attachment: imageAttachment)
+        
         return atr
     }
 }
