@@ -56,6 +56,4 @@ class ViewController: UITabBarController {
             }
         }
     }
-
 }
-
