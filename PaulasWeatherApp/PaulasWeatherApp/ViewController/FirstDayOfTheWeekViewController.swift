@@ -18,14 +18,15 @@ class FirstDayOfTheWeekController: UIViewController {
         case su = "Sunday"
     }
     private let picker = UIPickerView()
-    private var selectedRow: Int?
     weak var delegate: FirstDayOfWeekDelegate?
+    private let defaults = UserDefaults.standard
+    private let backgroundImage = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBlue
+        setBackgroundImage()
         setPicker()
-        navigationItem.title = NSLocalizedString("First day of the week", comment: "Settings view controller title")
+        navigationItem.title = "First day of the week"
     }
     
     private func setPicker() {
@@ -35,12 +36,27 @@ class FirstDayOfTheWeekController: UIViewController {
         picker.center = self.view.center
         picker.backgroundColor = .clear
         picker.frame = view.bounds
+        let row = defaults.integer(forKey: "Selected first day row")
+        picker.selectRow(row, inComponent: 0, animated: false)
+    }
+    
+    private func setBackgroundImage() {
+        view.addSubview(backgroundImage)
+        backgroundImage.image = UIImage(named: "background")
+        backgroundImage.backgroundColor = .clear
+        backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        NSLayoutConstraint.activate([
+            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if self.isMovingFromParent {
-            delegate?.onFirstDayOfWeekChanged(day: DaysOfWeek.allCases[selectedRow ?? 0].rawValue)
+            delegate?.onFirstDayOfWeekChanged()
         }
     }
 }
@@ -59,14 +75,14 @@ extension FirstDayOfTheWeekController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if row <= DaysOfWeek.allCases.count {
             return DaysOfWeek.allCases[row].rawValue
-        }
-        else {
+        } else {
             return "Error"
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
-    {
-        selectedRow = pickerView.selectedRow(inComponent: component)
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let selectedRow = pickerView.selectedRow(inComponent: component)
+        defaults.set(selectedRow, forKey: "Selected first day row")
+        defaults.set(DaysOfWeek.allCases[selectedRow].rawValue, forKey: "First day of the week")
     }
 }

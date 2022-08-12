@@ -10,6 +10,7 @@ import CoreLocation
 class LocationViewController: UIViewController {
     private let tableView = UITableView()
     private let findCountryField = UITextField()
+    private let backgroundImage = UIImageView()
     private let locationManager = { () -> CLLocationManager in
         let manager = CLLocationManager()
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -25,7 +26,8 @@ class LocationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBlue
+        setBackgroundImage()
+        navigationItem.title = "Location"
         displayCountries = countries
         setFindCountryField()
         setTableView()
@@ -62,7 +64,20 @@ class LocationViewController: UIViewController {
         ])
     }
     
-    func filterBy( countryName: String) {
+    private func setBackgroundImage() {
+            view.addSubview(backgroundImage)
+            backgroundImage.image = UIImage(named: "background")
+            backgroundImage.backgroundColor = .clear
+            backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+            backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+            NSLayoutConstraint.activate([
+                backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
+                backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
+        }
+    
+    func filterBy(countryName: String) {
         if !countryName.isEmpty {
             displayCountries = countries.filter { $0.contains(countryName) }
         } else {
@@ -83,10 +98,7 @@ extension LocationViewController: UITextFieldDelegate {
         if let nextField = self.view.viewWithTag(textField.tag + 1) as? UITextField {
             nextField.becomeFirstResponder()
         } else {
-            guard let text = textField.text
-            else {
-                return false
-            }
+            guard let text = textField.text else { return false }
             filterBy(countryName: text)
             tableView.reloadData()
             textField.resignFirstResponder()
@@ -102,8 +114,7 @@ extension LocationViewController: UITableViewDelegate {
                 locationManager.delegate = self
                 locationManager.startUpdatingLocation()
             }
-        }
-        else if indexPath.row - 1 <= displayCountries.count {
+        } else if indexPath.row - 1 <= displayCountries.count {
             locationManager.stopUpdatingLocation()
             let address = displayCountries[indexPath.row - 1]
             let geoCoder = CLGeocoder()
@@ -111,11 +122,7 @@ extension LocationViewController: UITableViewDelegate {
                 guard
                     let placemarks = placemarks,
                     let latitude = placemarks.first?.location?.coordinate.latitude,
-                    let longitude = placemarks.first?.location?.coordinate.longitude
-                else {
-                    print("No location found")
-                    return
-                }
+                    let longitude = placemarks.first?.location?.coordinate.longitude else { return }
                 print("\(latitude), \(longitude)")
             }
         }
@@ -139,6 +146,7 @@ extension LocationViewController: UITableViewDataSource {
         }
         cell.backgroundColor = .clear
         cell.textLabel?.textAlignment = .center
+        
         return cell
     }
 }

@@ -8,5 +8,5 @@
 import Foundation
 
 protocol FirstDayOfWeekDelegate: AnyObject {
-    func onFirstDayOfWeekChanged(day: String)
+    func onFirstDayOfWeekChanged()
 }

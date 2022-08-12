@@ -13,16 +13,17 @@ class SettingsViewController: UIViewController {
         case unit = "Unit of measurement"
         case location = "Location"
     }
-    private let initialValues = ["Mo", "C", ""]
     private let tableView = UITableView()
     private var lastSelectedCell: IndexPath?
     private let firstDayOfWeekViewController = FirstDayOfTheWeekController()
     private let unitOfMeasurementViewController = UnitOfMeasurmentViewController()
     private let locationViewController = LocationViewController()
+    private let defaults = UserDefaults.standard
+    private let backgroundImage = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBlue
+        setBackgroundImage()
         setTableView()
         lastSelectedCell = tableView.indexPathsForSelectedRows?[0]
         firstDayOfWeekViewController.delegate = self
@@ -37,16 +38,25 @@ class SettingsViewController: UIViewController {
         tableView.backgroundColor = .clear
         tableView.frame = view.bounds
     }
+    
+    private func setBackgroundImage() {
+        view.addSubview(backgroundImage)
+        backgroundImage.image = UIImage(named: "background")
+        backgroundImage.backgroundColor = .clear
+        backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        NSLayoutConstraint.activate([
+            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
+    }
 }
 
 extension SettingsViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         lastSelectedCell = indexPath
-        guard let navigationController = navigationController
-        else {
-            return
-        }
+        guard let navigationController = navigationController else { return }
         if indexPath.row <= SettingsType.allCases.count {
             switch SettingsType.allCases[indexPath.row].rawValue {
             case "First day of the week":
@@ -71,27 +81,29 @@ extension SettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
         if indexPath.row <= SettingsType.allCases.count{
-            cell.textLabel?.text = SettingsType.allCases[indexPath.row].rawValue
-            cell.detailTextLabel?.text = initialValues[indexPath.row]
+            let settingType = SettingsType.allCases[indexPath.row]
+            cell.textLabel?.text = settingType.rawValue
+            cell.detailTextLabel?.text = defaults.string(forKey: settingType.rawValue)
         }
         cell.backgroundColor = .clear
         cell.accessoryType = .disclosureIndicator
+        
         return cell
     }
 }
 
 extension SettingsViewController: MeasurementsDelegate {
-    func onMeasurementUnitChanged(unit: String) {
+    func onMeasurementUnitChanged() {
         guard let index = lastSelectedCell else { return }
-        print(unit)
-        tableView.cellForRow(at: index)?.detailTextLabel?.text = String(unit.first ?? " ")
+        guard let unit = defaults.string(forKey: "Unit of measurement") else { return }
+        tableView.cellForRow(at: index)?.detailTextLabel?.text = unit
     }
 }
 
 extension SettingsViewController: FirstDayOfWeekDelegate{
-    func onFirstDayOfWeekChanged(day: String) {
+    func onFirstDayOfWeekChanged() {
         guard let index = lastSelectedCell else { return }
-        print(day)
-        tableView.cellForRow(at: index)?.detailTextLabel?.text = String(day.prefix(2))
+        guard let day = defaults.string(forKey: "First day of the week") else { return }
+        tableView.cellForRow(at: index)?.detailTextLabel?.text = day
     }
 }

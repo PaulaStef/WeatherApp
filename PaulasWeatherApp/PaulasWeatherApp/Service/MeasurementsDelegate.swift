@@ -7,7 +7,6 @@
 
 import Foundation
 
-protocol MeasurementsDelegate : AnyObject {
-    
-    func onMeasurementUnitChanged(unit: String)
+protocol MeasurementsDelegate: AnyObject {
+    func onMeasurementUnitChanged()
 }
