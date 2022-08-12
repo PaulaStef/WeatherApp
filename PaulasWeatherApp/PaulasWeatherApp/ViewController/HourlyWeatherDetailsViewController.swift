@@ -32,7 +32,7 @@ class HourlyWeatherDetailsViewController: UIViewController {
     
     private let temperatureLabel = UILabel()
     private let backgroundImage = UIImageView()
-    private let weatherDetails : WeatherDetails
+    private let weatherDetails: WeatherDetails
     
     init(for hourlyWeather: WeatherDetails) {
         self.weatherDetails = hourlyWeather
@@ -45,7 +45,6 @@ class HourlyWeatherDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setBackgroundImage()
         setTemperatureLabel()
         setCollectionView()
@@ -58,7 +57,6 @@ class HourlyWeatherDetailsViewController: UIViewController {
         temperatureLabel.backgroundColor = .clear
         temperatureLabel.text = "\(weatherDetails.temp) °C"
         temperatureLabel.font = .systemFont(ofSize: 42)
-        
         NSLayoutConstraint.activate([
             temperatureLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             temperatureLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
@@ -72,7 +70,6 @@ class HourlyWeatherDetailsViewController: UIViewController {
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        
         NSLayoutConstraint.activate([
             backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -85,7 +82,6 @@ class HourlyWeatherDetailsViewController: UIViewController {
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
-        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 300),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
@@ -124,15 +120,15 @@ extension HourlyWeatherDetailsViewController: UICollectionViewDataSource {
             cell.titleLabel.text = "\(detail.rawValue)"
             cell.descriptionLabel.text = "\(getValue(for: detail)) "
         }
-        
         cell.backgroundColor = .separator
         cell.layer.cornerRadius = 7.0
         cell.selectedBackgroundView = collectionView.backgroundView
+        
         return cell
     }
 }
 
-extension HourlyWeatherDetailsViewController : UICollectionViewDelegateFlowLayout {
+extension HourlyWeatherDetailsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width/2.5, height: collectionView.frame.width/2)
     }

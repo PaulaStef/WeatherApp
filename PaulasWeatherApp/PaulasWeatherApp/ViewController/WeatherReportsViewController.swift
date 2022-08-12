@@ -42,7 +42,6 @@ class WeatherReportsViewController: UIViewController {
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        
         NSLayoutConstraint.activate([
             backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -54,16 +53,13 @@ class WeatherReportsViewController: UIViewController {
         let date = Date()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        
-        for (_, item) in hourlyWeather.enumerated() {
+        for item in hourlyWeather {
             let comingFromTheServer = TimeInterval(item.dt)
             let calendar2 = Calendar.current
             let date2 = Date(timeIntervalSince1970: comingFromTheServer)
             let hourWeather = calendar2.component(.hour, from: date2)
-            
             if hour - hourWeather > 0 {
-                if !self.hourlyWeather.contains(where: { $0.dt == item.dt })
-                {
+                if !self.hourlyWeather.contains(where: { $0.dt == item.dt }){
                     self.hourlyWeather.append(item)
                 }
             }
@@ -81,7 +77,7 @@ class WeatherReportsViewController: UIViewController {
     }
 }
 
-extension WeatherReportsViewController :  UITableViewDataSource {
+extension WeatherReportsViewController:  UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return hourlyWeather.count
     }
@@ -89,16 +85,16 @@ extension WeatherReportsViewController :  UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a"
-        
         let tableCell = UITableViewCell(style: .value1, reuseIdentifier: "tableCell")
         tableCell.textLabel?.text = "\(Int(round(hourlyWeather[indexPath.row].temp))) °C"
         tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(hourlyWeather[indexPath.row].dt))))
         tableCell.backgroundColor = .clear
+        
         return tableCell
     }
 }
 
-extension WeatherReportsViewController : UITableViewDelegate {
+extension WeatherReportsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let weatherDetails = hourlyWeather[indexPath.row]
         let viewController = HourlyWeatherDetailsViewController(for: weatherDetails)
