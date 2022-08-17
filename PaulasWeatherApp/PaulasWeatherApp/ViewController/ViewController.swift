@@ -8,48 +8,40 @@
 import UIKit
 
 class ViewController: UITabBarController {
-    var countryCityName: String?
-    var currentWeather: WeatherDetails?
-    var hourlyWeatherList = [WeatherDetails]()
-    var dailyWeatherList = [Daily]()
+        
+    private let weatherVC = CurrentWeatherViewController()
+    private let metricsVC = WeatherReportsViewController()
+    private let settingsVC = SettingsViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
-        let WeatherVC = CurrentWeatherViewController()
-        let MetricsVC = WeatherReportsViewController()
-        let SettingsVC = SettingsViewController()
-        
-        self.setViewControllers([WeatherVC ,MetricsVC ,SettingsVC ], animated: false)
-        
-        guard let items = self.tabBar.items else { return }
-        
-        let images = ["clock", "calendar", "gear.circle"]
-        
-        for x in 0...2 {
-            items[x].image = UIImage(systemName: images[x])
-        }
-        
-        self.tabBar.tintColor = .black
+        setTabBar()
         let time = Int(NSDate().timeIntervalSince1970)
-        gettingWeatherData(lat: 33.44, lon: -94.04, time: time)
+        getWeatherData(lat: 33.44, lon: -94.04, time: time)
     }
     
-    func gettingWeatherData(lat: Float, lon: Float, time: Int) {
-        dailyWeatherList.removeAll()
-        hourlyWeatherList.removeAll()
+    private func setTabBar() {
+        setViewControllers([weatherVC, metricsVC, settingsVC], animated: false)
+        guard let items = tabBar.items else { return }
+        let images = [UIImage(systemName: "clock"), UIImage(systemName:"calendar"), UIImage(named: "settings")]
+        
+        for (index, item) in items.enumerated() {
+            item.image = images[index]
+        }
+        tabBar.tintColor = .black
+        self.tabBar.tintColor = .black
+    }
+        
+    private func getWeatherData(lat: Float, lon: Float, time: Int) {
         WeatherService.getWeatherData(lat: lat, lon: lon, time: time) { data, response, error in
             let decoder = JSONDecoder()
+            guard let data = data else {
+                return
+            }
             do {
-                let decoded = try decoder.decode(WeatherDataModel.self, from: data!)
-                self.countryCityName = decoded.timezone
-                self.currentWeather = decoded.current
-                //self.hourlyWeatherList = decoded.hourly
-                //self.dailyWeatherList = decoded.daily
+                let decoded = try decoder.decode(WeatherDataModel.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    print(decoded.timezone)
-                    print(decoded)
+                    weatherVC.setCurrentWeatherData(decoded)
                 }
             } catch {
                 print("Failed to decode JSON \(error)")
