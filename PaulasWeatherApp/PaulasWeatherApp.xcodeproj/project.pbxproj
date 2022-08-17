@@ -21,6 +21,8 @@
 		4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E4288EC66700F8317F /* SettingsViewController.swift */; };
 		4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */; };
 		4F98DA682890242500E63EAA /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F98DA672890242500E63EAA /* WeatherService.swift */; };
+		4FB2B23D289805180009FFC3 /* HourlyWeatherDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */; };
+		4FF4F25028A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		4F6E90E4288EC66700F8317F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherReportsViewController.swift; sourceTree = "<group>"; };
 		4F98DA672890242500E63EAA /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsViewController.swift; sourceTree = "<group>"; };
+		4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +122,7 @@
 		4F6E90B0288EBA1800F8317F /* PaulasWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				4FF4F24E28A3961800B7D3F1 /* View */,
 				4F63CEF3288FD69B008CAA26 /* Model */,
 				4F6E90E1288EC62000F8317F /* ViewController */,
 				4F6E90B1288EBA1800F8317F /* AppDelegate.swift */,
@@ -154,8 +159,17 @@
 				4F6E90E2288EC63A00F8317F /* CurrentWeatherViewController.swift */,
 				4F6E90E4288EC66700F8317F /* SettingsViewController.swift */,
 				4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */,
+				4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */,
 			);
 			path = ViewController;
+			sourceTree = "<group>";
+		};
+		4FF4F24E28A3961800B7D3F1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,7 +303,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FB2B23D289805180009FFC3 /* HourlyWeatherDetailsViewController.swift in Sources */,
 				4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */,
+				4FF4F25028A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift in Sources */,
 				4F6E90B6288EBA1800F8317F /* ViewController.swift in Sources */,
 				4F6E90E3288EC63A00F8317F /* CurrentWeatherViewController.swift in Sources */,
 				4F6E90B2288EBA1800F8317F /* AppDelegate.swift in Sources */,
@@ -473,6 +489,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43PMLR7967;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PaulasWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -500,6 +517,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43PMLR7967;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PaulasWeatherApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
