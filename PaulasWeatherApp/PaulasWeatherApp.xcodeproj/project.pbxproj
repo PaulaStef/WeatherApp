@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F4816A328ACC44C00B201A4 /* NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4816A228ACC44C00B201A4 /* NotificationName.swift */; };
 		4F50745C289BA158002ECC0B /* FirstDayOfTheWeekViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50745B289BA158002ECC0B /* FirstDayOfTheWeekViewController.swift */; };
 		4F50745E289BADD0002ECC0B /* UnitOfMeasurmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50745D289BADD0002ECC0B /* UnitOfMeasurmentViewController.swift */; };
 		4F507460289BE8ED002ECC0B /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50745F289BE8ED002ECC0B /* LocationViewController.swift */; };
@@ -24,7 +25,6 @@
 		4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E4288EC66700F8317F /* SettingsViewController.swift */; };
 		4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */; };
 		4F98DA682890242500E63EAA /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F98DA672890242500E63EAA /* WeatherService.swift */; };
-		4FBF721B28A50C2B00C6A871 /* MeasurementsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBF721A28A50C2B00C6A871 /* MeasurementsDelegate.swift */; };
 		4FBF721D28A51C3500C6A871 /* FirstDayOfWeekDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBF721C28A51C3500C6A871 /* FirstDayOfWeekDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F4816A228ACC44C00B201A4 /* NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationName.swift; sourceTree = "<group>"; };
 		4F50745B289BA158002ECC0B /* FirstDayOfTheWeekViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstDayOfTheWeekViewController.swift; sourceTree = "<group>"; };
 		4F50745D289BADD0002ECC0B /* UnitOfMeasurmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitOfMeasurmentViewController.swift; sourceTree = "<group>"; };
 		4F50745F289BE8ED002ECC0B /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
@@ -67,7 +68,6 @@
 		4F6E90E4288EC66700F8317F /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherReportsViewController.swift; sourceTree = "<group>"; };
 		4F98DA672890242500E63EAA /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
-		4FBF721A28A50C2B00C6A871 /* MeasurementsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDelegate.swift; sourceTree = "<group>"; };
 		4FBF721C28A51C3500C6A871 /* FirstDayOfWeekDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstDayOfWeekDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */,
+				4F4816A228ACC44C00B201A4 /* NotificationName.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -175,7 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				4F98DA672890242500E63EAA /* WeatherService.swift */,
-				4FBF721A28A50C2B00C6A871 /* MeasurementsDelegate.swift */,
 				4FBF721C28A51C3500C6A871 /* FirstDayOfWeekDelegate.swift */,
 			);
 			path = Service;
@@ -315,11 +315,11 @@
 				4F50745E289BADD0002ECC0B /* UnitOfMeasurmentViewController.swift in Sources */,
 				4F6E90E7288EC6A400F8317F /* WeatherReportsViewController.swift in Sources */,
 				4F6E90B6288EBA1800F8317F /* ViewController.swift in Sources */,
+				4F4816A328ACC44C00B201A4 /* NotificationName.swift in Sources */,
 				4F6E90E3288EC63A00F8317F /* CurrentWeatherViewController.swift in Sources */,
 				4F50745C289BA158002ECC0B /* FirstDayOfTheWeekViewController.swift in Sources */,
 				4F507460289BE8ED002ECC0B /* LocationViewController.swift in Sources */,
 				4F6E90B2288EBA1800F8317F /* AppDelegate.swift in Sources */,
-				4FBF721B28A50C2B00C6A871 /* MeasurementsDelegate.swift in Sources */,
 				4FBF721D28A51C3500C6A871 /* FirstDayOfWeekDelegate.swift in Sources */,
 				4F98DA682890242500E63EAA /* WeatherService.swift in Sources */,
 				4F6E90E5288EC66700F8317F /* SettingsViewController.swift in Sources */,

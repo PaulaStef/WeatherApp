@@ -7,7 +7,6 @@
 import UIKit
 
 class FirstDayOfTheWeekController: UIViewController {
-    
     enum DaysOfWeek: String, CaseIterable {
         case mo = "Monday"
         case tu = "Tuesday"
@@ -18,9 +17,25 @@ class FirstDayOfTheWeekController: UIViewController {
         case su = "Sunday"
     }
     private let picker = UIPickerView()
-    weak var delegate: FirstDayOfWeekDelegate?
+    private let notificationCenter: NotificationCenter
     private let defaults = UserDefaults.standard
     private let backgroundImage = UIImageView()
+    private var firstDay: DaysOfWeek {
+        didSet{
+            notificationCenter.post(name: .firstDayOfWeekChanged, object: nil)
+        }
+    }
+    
+    init(notificationCenter: NotificationCenter = .default) {
+        self.notificationCenter = notificationCenter
+        let dayName = defaults.string(forKey: "First day of the week") ?? "Monday"
+        firstDay = DaysOfWeek.init(rawValue: dayName) ?? DaysOfWeek.mo
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,15 +67,9 @@ class FirstDayOfTheWeekController: UIViewController {
             backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if self.isMovingFromParent {
-            delegate?.onFirstDayOfWeekChanged()
-        }
-    }
 }
 
+//MARK: - PickerView methods
 extension FirstDayOfTheWeekController: UIPickerViewDataSource  {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -84,5 +93,6 @@ extension FirstDayOfTheWeekController: UIPickerViewDelegate {
         let selectedRow = pickerView.selectedRow(inComponent: component)
         defaults.set(selectedRow, forKey: "Selected first day row")
         defaults.set(DaysOfWeek.allCases[selectedRow].rawValue, forKey: "First day of the week")
+        firstDay = DaysOfWeek.allCases[selectedRow]
     }
 }

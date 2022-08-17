@@ -14,15 +14,31 @@ class UnitOfMeasurmentViewController: UIViewController {
         case kelvin = "Kelvin"
     }
     private let picker = UIPickerView()
-    weak var delegate: MeasurementsDelegate?
+    private let notificationCenter: NotificationCenter
     private let defaults = UserDefaults.standard
     private let backgroundImage = UIImageView()
+    private var unit: UnitType {
+        didSet{
+            notificationCenter.post(name: .temperatureChanged, object: nil)
+        }
+    }
+    
+    init(notificationCenter: NotificationCenter = .default) {
+        self.notificationCenter = notificationCenter
+        let unitName = defaults.string(forKey: "Unit of measurement") ?? "Celsius"
+        unit = UnitType.init(rawValue: unitName) ?? UnitType.celsius
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setBackgroundImage()
         setPicker()
-        navigationItem.title = NSLocalizedString("Unit of Measurment", comment: "Unit of measurment view controller title")
+        navigationItem.title = "Unit of measurment"
     }
     
     private func setPicker() {
@@ -48,15 +64,9 @@ class UnitOfMeasurmentViewController: UIViewController {
             backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if self.isMovingFromParent {
-            delegate?.onMeasurementUnitChanged()
-        }
-    }
 }
 
+// MARK: - Picker methods
 extension UnitOfMeasurmentViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -76,10 +86,10 @@ extension UnitOfMeasurmentViewController: UIPickerViewDelegate {
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
-    {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
         let selectedRow = pickerView.selectedRow(inComponent: component)
         defaults.set(selectedRow, forKey: "Selected unit row")
         defaults.set(UnitType.allCases[selectedRow].rawValue, forKey: "Unit of measurement")
+        unit = UnitType.allCases[selectedRow]
     }
 }

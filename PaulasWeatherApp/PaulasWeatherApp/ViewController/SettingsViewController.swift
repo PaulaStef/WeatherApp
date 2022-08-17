@@ -18,16 +18,26 @@ class SettingsViewController: UIViewController {
     private let firstDayOfWeekViewController = FirstDayOfTheWeekController()
     private let unitOfMeasurementViewController = UnitOfMeasurmentViewController()
     private let locationViewController = LocationViewController()
+    private let notificationCenter: NotificationCenter
     private let defaults = UserDefaults.standard
     private let backgroundImage = UIImageView()
     
+    init(notificationCenter: NotificationCenter = .default){
+        self.notificationCenter = notificationCenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(onFirstDayOfWeekChanged), name: .firstDayOfWeekChanged, object: nil)
         setBackgroundImage()
         setTableView()
         lastSelectedCell = tableView.indexPathsForSelectedRows?[0]
-        firstDayOfWeekViewController.delegate = self
-        unitOfMeasurementViewController .delegate = self
     }
     
     private func setTableView() {
@@ -51,8 +61,21 @@ class SettingsViewController: UIViewController {
             backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
+// MARK: - NotificationCenter methods
+    @objc func onMeasurementUnitChanged() {
+        guard let index = lastSelectedCell else { return }
+        guard let unit = defaults.string(forKey: "Unit of measurement") else { return }
+        tableView.cellForRow(at: index)?.detailTextLabel?.text = unit
+    }
+    
+    @objc func onFirstDayOfWeekChanged() {
+        guard let index = lastSelectedCell else { return }
+        guard let day = defaults.string(forKey: "First day of the week") else { return }
+        tableView.cellForRow(at: index)?.detailTextLabel?.text = day
+    }
 }
 
+// MARK: - TableView methods
 extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         lastSelectedCell = indexPath
@@ -89,21 +112,5 @@ extension SettingsViewController: UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
         
         return cell
-    }
-}
-
-extension SettingsViewController: MeasurementsDelegate {
-    func onMeasurementUnitChanged() {
-        guard let index = lastSelectedCell else { return }
-        guard let unit = defaults.string(forKey: "Unit of measurement") else { return }
-        tableView.cellForRow(at: index)?.detailTextLabel?.text = unit
-    }
-}
-
-extension SettingsViewController: FirstDayOfWeekDelegate{
-    func onFirstDayOfWeekChanged() {
-        guard let index = lastSelectedCell else { return }
-        guard let day = defaults.string(forKey: "First day of the week") else { return }
-        tableView.cellForRow(at: index)?.detailTextLabel?.text = day
     }
 }
