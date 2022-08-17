@@ -30,7 +30,6 @@ class ViewController: UITabBarController {
         for (index, item) in items.enumerated() {
             item.image = images[index]
         }
-        
         tabBar.tintColor = .black
         self.tabBar.tintColor = .black
     }
@@ -44,9 +43,8 @@ class ViewController: UITabBarController {
             do {
                 let decoded = try decoder.decode(WeatherDataModel.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    //weatherVC.activityIndicator.stopAnimating()
-                    //weatherVC.setCurrentWeatherData(decoded)
                     metricsVC.setHourlyData(hourlyWeather: decoded.hourly)
+                    weatherVC.setCurrentWeatherData(decoded)
                 }
             } catch {
                 print("Failed to decode JSON \(error)")

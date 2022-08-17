@@ -62,7 +62,6 @@
 		4F6E90E6288EC6A400F8317F /* WeatherReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherReportsViewController.swift; sourceTree = "<group>"; };
 		4F98DA672890242500E63EAA /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		4FB2B23C289805180009FFC3 /* HourlyWeatherDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsViewController.swift; sourceTree = "<group>"; };
-		4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIcons.swift; sourceTree = "<group>"; };
 		4FF4F24F28A3963C00B7D3F1 /* HourlyWeatherDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherDetailsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,7 +95,6 @@
 			children = (
 				4F63CEF4288FD6EE008CAA26 /* WeatherDescription.swift */,
 				4F98DA672890242500E63EAA /* WeatherService.swift */,
-				4FDEB96B2893C5B4004A339C /* WeatherIcons.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

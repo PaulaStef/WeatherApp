@@ -8,7 +8,6 @@
 import UIKit
 
 class WeatherReportsViewController: UIViewController {
-    
     private var hourlyWeather: [WeatherDetails] = []
     private let tableView = UITableView()
     private var refresher = UIRefreshControl()

@@ -4,8 +4,6 @@
 //
 //  Created by Stef, Paula on 8/1/22.
 //
-
-import Foundation
 import UIKit
 
 enum DetailsHourly: String, CaseIterable{
@@ -16,7 +14,6 @@ enum DetailsHourly: String, CaseIterable{
     case clouds = "Clouds"
     case visibility = "Visibility"
     case windSpeed = "Wind Speed"
-    
     static let allItems: [DetailsHourly] = [.feels_like, .pressure, .humidity, .uvi, .clouds, .visibility, .windSpeed]
 }
 

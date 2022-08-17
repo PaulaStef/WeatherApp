@@ -3,6 +3,9 @@
     {
       "filename" : "icons8-settings-50.png",
       "idiom" : "universal"
+    },
+    {
+      "idiom" : "iphone"
     }
   ],
   "info" : {
