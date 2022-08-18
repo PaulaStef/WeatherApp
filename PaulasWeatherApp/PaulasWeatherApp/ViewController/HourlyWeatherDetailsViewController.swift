@@ -6,7 +6,7 @@
 //
 import UIKit
 
-enum DetailsHourly: String, CaseIterable{
+enum DetailsHourly: String, CaseIterable {
     case feels_like = "Feels like"
     case pressure = "Pressure"
     case humidity = "Humidity"
@@ -26,13 +26,15 @@ class HourlyWeatherDetailsViewController: UIViewController {
         cv.register(HourlyWeatherDetailsCell.self, forCellWithReuseIdentifier: "cell")
         return cv
     }()
-    
+    private let notificationCenter: NotificationCenter
+    private let defaults = UserDefaults.standard
     private let temperatureLabel = UILabel()
     private let backgroundImage = UIImageView()
     private let weatherDetails: WeatherDetails
     
-    init(for hourlyWeather: WeatherDetails) {
+    init(for hourlyWeather: WeatherDetails, notificationCenter: NotificationCenter = .default) {
         self.weatherDetails = hourlyWeather
+        self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -42,6 +44,7 @@ class HourlyWeatherDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
         setBackgroundImage()
         setTemperatureLabel()
         setCollectionView()
@@ -52,7 +55,9 @@ class HourlyWeatherDetailsViewController: UIViewController {
         temperatureLabel.textAlignment = .center
         view.addSubview(temperatureLabel)
         temperatureLabel.backgroundColor = .clear
-        temperatureLabel.text = "\(weatherDetails.temp) °C"
+        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return }
+        let temp = ViewController.convert(temperature: weatherDetails.temp, to: unitType)
+        temperatureLabel.text = createTempString(temperature: temp)
         temperatureLabel.font = .systemFont(ofSize: 42)
         NSLayoutConstraint.activate([
             temperatureLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
@@ -89,7 +94,9 @@ class HourlyWeatherDetailsViewController: UIViewController {
     func getValue(for detail: DetailsHourly ) -> Any {
         switch detail {
         case .feels_like:
-            return weatherDetails.feelsLike
+            guard let unitType = defaults.string(forKey: "Unit of measurement") else { return 0 }
+            let temp = ViewController.convert(temperature: weatherDetails.feelsLike, to: unitType)
+            return createTempString(temperature: temp)
         case .pressure:
             return weatherDetails.pressure
         case .humidity:
@@ -104,8 +111,20 @@ class HourlyWeatherDetailsViewController: UIViewController {
             return weatherDetails.windSpeed
         }
     }
+    
+    private func createTempString(temperature: Double) -> String {
+        let temp = Int(round(temperature))
+        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return "Error" }
+        let unit = String(unitType.first ?? " ")
+        return "\(temp) °\(unit)"
+    }
+    
+    @objc private func onMeasurementUnitChanged() {
+        collectionView.reloadData()
+    }
 }
 
+//MARK: - CollectionView methods
 extension HourlyWeatherDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? HourlyWeatherDetailsCell

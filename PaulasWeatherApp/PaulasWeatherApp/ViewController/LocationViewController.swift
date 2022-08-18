@@ -11,6 +11,10 @@ class LocationViewController: UIViewController {
     private let tableView = UITableView()
     private let findCountryField = UITextField()
     private let backgroundImage = UIImageView()
+    private let defaults = UserDefaults.standard
+    private let notificationCenter: NotificationCenter
+    private var latitude: Float
+    private var longitude: Float
     private let locationManager = { () -> CLLocationManager in
         let manager = CLLocationManager()
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -22,6 +26,17 @@ class LocationViewController: UIViewController {
     private let countries = NSLocale.isoCountryCodes.map { (code:String) -> String in
         let id = NSLocale.localeIdentifier(fromComponents: [NSLocale.Key.countryCode.rawValue: code])
         return NSLocale(localeIdentifier: "en_US").displayName(forKey: NSLocale.Key.identifier, value: id) ?? "Country not found for code: \(code)"
+    }
+    
+    init(notificationCenter: NotificationCenter = .default) {
+        self.notificationCenter = notificationCenter
+        latitude = defaults.float(forKey: "Latitude")
+        longitude = defaults.float(forKey: "Longitude")
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -65,17 +80,17 @@ class LocationViewController: UIViewController {
     }
     
     private func setBackgroundImage() {
-            view.addSubview(backgroundImage)
-            backgroundImage.image = UIImage(named: "background")
-            backgroundImage.backgroundColor = .clear
-            backgroundImage.translatesAutoresizingMaskIntoConstraints = false
-            backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-            NSLayoutConstraint.activate([
-                backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-                backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
-        }
+        view.addSubview(backgroundImage)
+        backgroundImage.image = UIImage(named: "background")
+        backgroundImage.backgroundColor = .clear
+        backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        NSLayoutConstraint.activate([
+            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
+    }
     
     func filterBy(countryName: String) {
         if !countryName.isEmpty {
@@ -86,10 +101,13 @@ class LocationViewController: UIViewController {
     }
 }
 
+//MARK: - Location Methods
 extension LocationViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
+        defaults.set(Float(locValue.latitude), forKey: "Latitude")
+        defaults.set(Float(locValue.longitude), forKey: "Longitude")
+        notificationCenter.post(name: .locationChanged, object: nil)
     }
 }
 
@@ -107,6 +125,7 @@ extension LocationViewController: UITextFieldDelegate {
     }
 }
 
+//MARK: - TableView Methods
 extension LocationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
@@ -121,9 +140,11 @@ extension LocationViewController: UITableViewDelegate {
             geoCoder.geocodeAddressString(address) { (placemarks, error) in
                 guard
                     let placemarks = placemarks,
-                    let latitude = placemarks.first?.location?.coordinate.latitude,
-                    let longitude = placemarks.first?.location?.coordinate.longitude else { return }
-                print("\(latitude), \(longitude)")
+                    let lat = placemarks.first?.location?.coordinate.latitude,
+                    let lon = placemarks.first?.location?.coordinate.longitude else { return }
+                self.defaults.set(Float(lat), forKey: "Latitude")
+                self.defaults.set(Float(lon), forKey: "Longitude")
+                self.notificationCenter.post(name: .locationChanged, object: nil)
             }
         }
         tableView.deselectRow(at: indexPath, animated: true)

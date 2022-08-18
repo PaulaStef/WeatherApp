@@ -61,6 +61,7 @@ class SettingsViewController: UIViewController {
             backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
+    
 // MARK: - NotificationCenter methods
     @objc func onMeasurementUnitChanged() {
         guard let index = lastSelectedCell else { return }

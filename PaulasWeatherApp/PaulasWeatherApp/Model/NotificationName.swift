@@ -15,4 +15,8 @@ extension Notification.Name {
     static var firstDayOfWeekChanged: Notification.Name {
         return .init(rawValue: "FirstDayOfTheWeek.changed")
     }
+    
+    static var locationChanged: Notification.Name {
+        return .init(rawValue: "Location.changed")
+    }
 }
