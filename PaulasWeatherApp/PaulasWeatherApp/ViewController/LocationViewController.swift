@@ -80,16 +80,11 @@ class LocationViewController: UIViewController {
     }
     
     private func setBackgroundImage() {
-        view.addSubview(backgroundImage)
+        view.addSubviewAligned(backgroundImage)
         backgroundImage.image = UIImage(named: "background")
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        NSLayoutConstraint.activate([
-            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
     
     func filterBy(countryName: String) {
@@ -128,12 +123,10 @@ extension LocationViewController: UITextFieldDelegate {
 //MARK: - TableView Methods
 extension LocationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            if CLLocationManager.locationServicesEnabled() {
-                locationManager.delegate = self
-                locationManager.startUpdatingLocation()
-            }
-        } else if indexPath.row - 1 <= displayCountries.count {
+        if indexPath.row == 0, CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.startUpdatingLocation()
+        } else if indexPath.row - 1 < displayCountries.count {
             locationManager.stopUpdatingLocation()
             let address = displayCountries[indexPath.row - 1]
             let geoCoder = CLGeocoder()
@@ -160,7 +153,7 @@ extension LocationViewController: UITableViewDataSource {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         if indexPath.row == 0 {
             cell.textLabel?.text = "Your location"
-        } else if indexPath.row - 1 <= displayCountries.count {
+        } else if indexPath.row - 1 < displayCountries.count {
             if !displayCountries.isEmpty {
                 cell.textLabel?.text = displayCountries[indexPath.row - 1]
             }

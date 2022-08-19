@@ -49,16 +49,11 @@ class WeatherReportsViewController: UIViewController {
     }
     
     private func setBackgroundImage() {
-        view.addSubview(backgroundImage)
+        view.addSubviewAligned(backgroundImage)
         backgroundImage.image = UIImage(named: "background")
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        NSLayoutConstraint.activate([
-            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
     
     func setHourlyData( hourlyWeather: [WeatherDetails] ) {

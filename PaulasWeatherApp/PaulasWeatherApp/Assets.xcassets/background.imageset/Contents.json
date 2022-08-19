@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Clouds.jpg",
+      "filename" : "Nature-Snowtop-Mountains-Winter-iPhone-Wallpaper.jpg",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Snow-Mountains-Night-Star-Meteors-iPhone-Wallpaper.jpg",
       "idiom" : "universal"
     }
   ],

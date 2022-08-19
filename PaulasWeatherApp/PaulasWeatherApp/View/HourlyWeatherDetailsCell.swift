@@ -22,12 +22,13 @@ class HourlyWeatherDetailsCell: UICollectionViewCell {
         titleLabel.backgroundColor = .clear
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
+        titleLabel.font = .systemFont(ofSize: 20)
         contentView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             titleLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 50)
+            titleLabel.heightAnchor.constraint(equalToConstant: 80)
         ])
     }
     
@@ -35,6 +36,7 @@ class HourlyWeatherDetailsCell: UICollectionViewCell {
         descriptionLabel.backgroundColor = .clear
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.textAlignment = .center
+        titleLabel.font = .systemFont(ofSize: 18)
         contentView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),

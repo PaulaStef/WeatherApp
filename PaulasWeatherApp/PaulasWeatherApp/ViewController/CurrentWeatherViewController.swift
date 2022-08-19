@@ -19,7 +19,7 @@ class CurrentWeatherViewController: UIViewController {
     private let defaults = UserDefaults.standard
     private var weatherData: Double?
     
-    init(notificationCenter: NotificationCenter = .default){
+    init(notificationCenter: NotificationCenter = .default) {
         self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -44,7 +44,6 @@ class CurrentWeatherViewController: UIViewController {
         tempLabel.translatesAutoresizingMaskIntoConstraints = false
         tempLabel.textAlignment = .center
         tempLabel.font = .systemFont(ofSize: 36)
-        tempLabel.textColor = .black
         tempLabel.text = "..."
         tempLabel.backgroundColor = .clear
         tempLabel.sizeToFit()
@@ -59,7 +58,6 @@ class CurrentWeatherViewController: UIViewController {
         sunsetLabel.translatesAutoresizingMaskIntoConstraints = false
         sunsetLabel.textAlignment = .center
         sunsetLabel.font = .systemFont(ofSize: 12)
-        sunsetLabel.textColor = .black
         sunsetLabel.backgroundColor = .clear
         sunsetLabel.attributedText = sunsetString
         sunsetLabel.sizeToFit()
@@ -75,7 +73,6 @@ class CurrentWeatherViewController: UIViewController {
         sunriseLabel.translatesAutoresizingMaskIntoConstraints = false
         sunriseLabel.textAlignment = .center
         sunriseLabel.font = .systemFont(ofSize: 12)
-        sunriseLabel.textColor = .black
         sunriseLabel.backgroundColor = .clear
         sunriseLabel.attributedText = sunriseString
         sunriseLabel.sizeToFit()
@@ -87,23 +84,18 @@ class CurrentWeatherViewController: UIViewController {
     }
     
     private func setBackgroundImage() {
-        view.addSubview(backgroundImage)
+        view.addSubviewAligned(backgroundImage)
         backgroundImage.image = UIImage(named: "background")
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        NSLayoutConstraint.activate([
-            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
     
     //MARK: - Label text methods
     private func createSunString(for name: String) -> NSMutableAttributedString {
         let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
         let imageAttachment = NSTextAttachment()
-        imageAttachment.image = UIImage(systemName: name)
+        imageAttachment.image = UIImage(systemName: name)?.withTintColor(sunsetLabel.textColor, renderingMode: .alwaysOriginal)
         imageAttachment.bounds = iconsSize
         let atr = NSMutableAttributedString(attachment: imageAttachment)
         
