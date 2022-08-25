@@ -12,13 +12,25 @@ class WeatherReportsViewController: UIViewController {
     private let tableView = UITableView()
     private var refresher = UIRefreshControl()
     private let backgroundImage = UIImageView()
+    private let notificationCenter: NotificationCenter
+    private let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
         setBackgroundImage()
         setTableView()
         setRefresher()
         refresh()
+    }
+    
+    init(notificationCenter: NotificationCenter = .default){
+        self.notificationCenter = notificationCenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setRefresher() {
@@ -33,25 +45,22 @@ class WeatherReportsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
+        tableView.frame = view.bounds
     }
     
     private func setBackgroundImage() {
-        view.addSubview(backgroundImage)
+        view.addSubviewAligned(backgroundImage)
         backgroundImage.image = UIImage(named: "background")
         backgroundImage.backgroundColor = .clear
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        NSLayoutConstraint.activate([
-            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor) ])
     }
     
     func setHourlyData( hourlyWeather: [WeatherDetails] ) {
         let date = Date()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
+        self.hourlyWeather.removeAll()
         for item in hourlyWeather {
             let comingFromTheServer = TimeInterval(item.dt)
             let calendar2 = Calendar.current
@@ -70,12 +79,19 @@ class WeatherReportsViewController: UIViewController {
         self.refresher.endRefreshing()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
+    private func createTempString(temperature: Double) -> String {
+        let temp = Int(round(temperature))
+        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return "Error" }
+        let unit = String(unitType.first ?? " ")
+        return "\(temp) °\(unit)"
+    }
+    
+    @objc private func onMeasurementUnitChanged() {
+        tableView.reloadData()
     }
 }
 
+//MARK: - TableView methods
 extension WeatherReportsViewController:  UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return hourlyWeather.count
@@ -85,7 +101,9 @@ extension WeatherReportsViewController:  UITableViewDataSource {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a"
         let tableCell = UITableViewCell(style: .value1, reuseIdentifier: "tableCell")
-        tableCell.textLabel?.text = "\(Int(round(hourlyWeather[indexPath.row].temp))) °C"
+        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return UITableViewCell() }
+        let temperature = ViewController.convert(temperature: hourlyWeather[indexPath.row].temp, to: unitType)
+        tableCell.textLabel?.text = createTempString(temperature: temperature)
         tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(hourlyWeather[indexPath.row].dt))))
         tableCell.backgroundColor = .clear
         

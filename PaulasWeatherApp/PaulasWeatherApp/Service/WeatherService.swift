@@ -14,19 +14,8 @@ class WeatherService {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=\(lat)&lon=\(lon)&dt=\(time)&units=metric&exclude=icon&appid=\(self.key)") else {
             return
         }
-        
         let session = URLSession.shared
         let task = session.dataTask(with: url, completionHandler: completionHandler)
         task.resume()
     }
-    
-    static func getWeatherIcon(iconKey: String, completionHandler:@escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Void) {
-        guard let url = URL(string: "http://openweathermap.org/img/wn/\(iconKey)@2x.png") else {
-            return
-        }
-            let session = URLSession.shared
-            let task = session.dataTask(with: url, completionHandler: completionHandler)
-            task.resume()
-        }
-    
 }
