@@ -6,27 +6,19 @@
 //
 import UIKit
 
+enum UnitType: String, CaseIterable {
+    case celsius = "Celsius"
+    case fahrenheit = "Fahrenheit"
+    case kelvin = "Kelvin"
+}
+
 class UnitOfMeasurmentViewController: UIViewController {
-    
-    enum UnitType: String, CaseIterable {
-        case celsius = "Celsius"
-        case fahrenheit = "Fahrenheit"
-        case kelvin = "Kelvin"
-    }
     private let picker = UIPickerView()
-    private let notificationCenter: NotificationCenter
-    private let defaults = UserDefaults.standard
     private let backgroundImage = UIImageView()
-    private var unit: UnitType {
-        didSet{
-            notificationCenter.post(name: .temperatureChanged, object: nil)
-        }
-    }
+    private let unitOfMeasurementViewModel: UnitOfMeasurementViewModel?
     
-    init(notificationCenter: NotificationCenter = .default) {
-        self.notificationCenter = notificationCenter
-        let unitName = defaults.string(forKey: "Unit of measurement") ?? "Celsius"
-        unit = UnitType.init(rawValue: unitName) ?? UnitType.celsius
+    init(unitOfMeasurementViewModel: UnitOfMeasurementViewModel) {
+        self.unitOfMeasurementViewModel = unitOfMeasurementViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,7 +30,7 @@ class UnitOfMeasurmentViewController: UIViewController {
         super.viewDidLoad()
         setBackgroundImage()
         setPicker()
-        navigationItem.title = "Unit of measurment"
+        navigationItem.title = "Unit of measurement"
     }
     
     private func setPicker() {
@@ -48,8 +40,7 @@ class UnitOfMeasurmentViewController: UIViewController {
         picker.center = self.view.center
         picker.backgroundColor = .clear
         picker.frame = view.bounds
-        let row = defaults.integer(forKey: "Selected unit row")
-        picker.selectRow(row, inComponent: 0, animated: false)
+        picker.selectRow(unitOfMeasurementViewModel?.row ?? 0, inComponent: 0, animated: false)
     }
     
     private func setBackgroundImage() {
@@ -81,10 +72,9 @@ extension UnitOfMeasurmentViewController: UIPickerViewDelegate {
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
-        let selectedRow = pickerView.selectedRow(inComponent: component)
-        defaults.set(selectedRow, forKey: "Selected unit row")
-        defaults.set(UnitType.allCases[selectedRow].rawValue, forKey: "Unit of measurement")
-        unit = UnitType.allCases[selectedRow]
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        guard let unitOfMeasurementViewModel = unitOfMeasurementViewModel else { return }
+        unitOfMeasurementViewModel.row = pickerView.selectedRow(inComponent: component)
+        unitOfMeasurementViewModel.unitTypeChanged()
     }
 }

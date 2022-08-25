@@ -18,6 +18,10 @@ enum DetailsHourly: String, CaseIterable {
 }
 
 class HourlyWeatherDetailsViewController: UIViewController {
+    private let notificationCenter: NotificationCenter
+    private let temperatureLabel = UILabel()
+    private let backgroundImage = UIImageView()
+    private let hourlyWeatherViewModel: HourlyWeatherViewModel?
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -26,14 +30,9 @@ class HourlyWeatherDetailsViewController: UIViewController {
         cv.register(HourlyWeatherDetailsCell.self, forCellWithReuseIdentifier: "cell")
         return cv
     }()
-    private let notificationCenter: NotificationCenter
-    private let defaults = UserDefaults.standard
-    private let temperatureLabel = UILabel()
-    private let backgroundImage = UIImageView()
-    private let weatherDetails: WeatherDetails
     
-    init(for hourlyWeather: WeatherDetails, notificationCenter: NotificationCenter = .default) {
-        self.weatherDetails = hourlyWeather
+    init(notificationCenter: NotificationCenter = .default, hourlyWeatherViewModel: HourlyWeatherViewModel) {
+        self.hourlyWeatherViewModel = hourlyWeatherViewModel
         self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -44,7 +43,7 @@ class HourlyWeatherDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .unitTypeChanged, object: nil)
         setBackgroundImage()
         setTemperatureLabel()
         setCollectionView()
@@ -55,9 +54,7 @@ class HourlyWeatherDetailsViewController: UIViewController {
         temperatureLabel.textAlignment = .center
         view.addSubview(temperatureLabel)
         temperatureLabel.backgroundColor = .clear
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return }
-        let temp = ViewController.convert(temperature: weatherDetails.temp, to: unitType)
-        temperatureLabel.text = createTempString(temperature: temp)
+        temperatureLabel.text = "\(hourlyWeatherViewModel?.temperature ?? 0) °\(hourlyWeatherViewModel?.unitType.first ?? "C")"
         temperatureLabel.font = .systemFont(ofSize: 42)
         NSLayoutConstraint.activate([
             temperatureLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
@@ -85,36 +82,9 @@ class HourlyWeatherDetailsViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
             collectionView.heightAnchor.constraint(equalToConstant: view.frame.height/2) ])
     }
-    
-    func getValue(for detail: DetailsHourly ) -> Any {
-        switch detail {
-        case .feels_like:
-            guard let unitType = defaults.string(forKey: "Unit of measurement") else { return 0 }
-            let temp = ViewController.convert(temperature: weatherDetails.feelsLike, to: unitType)
-            return createTempString(temperature: temp)
-        case .pressure:
-            return weatherDetails.pressure
-        case .humidity:
-            return weatherDetails.humidity
-        case .uvi:
-            return weatherDetails.uvi
-        case .clouds:
-            return weatherDetails.clouds
-        case .visibility:
-            return weatherDetails.visibility
-        case .windSpeed:
-            return weatherDetails.windSpeed
-        }
-    }
-    
-    private func createTempString(temperature: Double) -> String {
-        let temp = Int(round(temperature))
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return "Error" }
-        let unit = String(unitType.first ?? " ")
-        return "\(temp) °\(unit)"
-    }
-    
+        
     @objc private func onMeasurementUnitChanged() {
+        hourlyWeatherViewModel?.setNewTemperature()
         collectionView.reloadData()
     }
 }
@@ -129,10 +99,9 @@ extension HourlyWeatherDetailsViewController: UICollectionViewDataSource {
         if indexPath.row < DetailsHourly.allItems.count{
             let detail = DetailsHourly.allItems[indexPath.row]
             cell.titleLabel.text = "\(detail.rawValue)"
-            cell.descriptionLabel.text = "\(getValue(for: detail)) "
+            cell.descriptionLabel.text = hourlyWeatherViewModel?.getValue(for: detail)
         }
-        cell.backgroundColor = .separator
-        cell.layer.cornerRadius = 7.0
+        cell.backgroundColor = .clear
         cell.selectedBackgroundView = collectionView.backgroundView
         
         return cell

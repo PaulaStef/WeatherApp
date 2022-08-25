@@ -8,7 +8,7 @@
 import Foundation
 
 extension Notification.Name {
-    static var temperatureChanged: Notification.Name {
+    static var unitTypeChanged: Notification.Name {
         return .init(rawValue: "UnitOfMeasurment.changed")
     }
     

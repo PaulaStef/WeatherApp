@@ -11,9 +11,18 @@ class HourlyWeatherDetailsCell: UICollectionViewCell {
     
     let titleLabel = UILabel()
     let descriptionLabel = UILabel()
+    let blurEffect: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.clipsToBounds = true
+        blurEffectView.layer.cornerRadius = 7.0
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        return blurEffectView
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
+        contentView.addSubviewAligned(blurEffect)
         setTitleLabel()
         setDescriptionLabel()
     }
@@ -23,7 +32,7 @@ class HourlyWeatherDetailsCell: UICollectionViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
         titleLabel.font = .systemFont(ofSize: 20)
-        contentView.addSubview(titleLabel)
+        blurEffect.contentView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor),
@@ -37,7 +46,7 @@ class HourlyWeatherDetailsCell: UICollectionViewCell {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.textAlignment = .center
         titleLabel.font = .systemFont(ofSize: 18)
-        contentView.addSubview(descriptionLabel)
+        blurEffect.contentView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             descriptionLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor),

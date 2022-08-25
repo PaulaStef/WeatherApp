@@ -7,7 +7,7 @@
 import UIKit
 
 extension UIView {
-    func addSubviewAligned(_ subview: UIView){
+    func addSubviewAligned(_ subview: UIView) {
         addSubview(subview)
         NSLayoutConstraint.activate([
             subview.trailingAnchor.constraint(equalTo: self.trailingAnchor),

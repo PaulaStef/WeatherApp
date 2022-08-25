@@ -8,7 +8,6 @@
 import UIKit
 
 class CurrentWeatherViewController: UIViewController {
-    
     private let tempLabel = UILabel()
     private let sunriseLabel = UILabel()
     private let sunsetLabel = UILabel()
@@ -16,11 +15,16 @@ class CurrentWeatherViewController: UIViewController {
     private var sunriseString = NSMutableAttributedString()
     private let backgroundImage = UIImageView()
     private let notificationCenter: NotificationCenter
-    private let defaults = UserDefaults.standard
-    private var weatherData: Double?
+    private var currentWeatherViewModel: CurrentWeatherViewModel?
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh:mm a"
+        return formatter
+    }()
     
-    init(notificationCenter: NotificationCenter = .default) {
+    init(notificationCenter: NotificationCenter = .default, currentWeatherViewModel: CurrentWeatherViewModel) {
         self.notificationCenter = notificationCenter
+        self.currentWeatherViewModel = currentWeatherViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -30,7 +34,8 @@ class CurrentWeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .unitTypeChanged, object: nil)
+        bindViewModel()
         sunsetString = createSunString(for: "sunset")
         sunriseString = createSunString(for: "sunrise")
         setBackgroundImage()
@@ -38,6 +43,21 @@ class CurrentWeatherViewController: UIViewController {
         setSunriseLabel()
         setSunsetLabel()
         view.backgroundColor = .systemRed
+    }
+    
+    private func bindViewModel() {
+        guard let currentWeatherViewModel = currentWeatherViewModel else {
+            return
+        }
+        currentWeatherViewModel.setTemperature = {
+            self.uploadTempLabelData()
+        }
+        currentWeatherViewModel.setSunset = {
+            self.uploadSunsetLabelData()
+        }
+        currentWeatherViewModel.setSunrise = {
+            self.uploadSunriseLabelData()
+        }
     }
     
     private func setTempLabel() {
@@ -102,36 +122,28 @@ class CurrentWeatherViewController: UIViewController {
         return atr
     }
     
-    private func createTempString(temperature: Double) -> String {
-        let temp = Int(round(temperature))
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return "Error" }
-        let unit = String(unitType.first ?? " ")
-        return "\(temp) °\(unit)"
+    //MARK: - Label Data methods
+    private func uploadTempLabelData() {
+        let temp = Int(round(currentWeatherViewModel?.temperature ?? 0.0))
+        let unit = String(currentWeatherViewModel?.unitType.first ?? " ")
+        tempLabel.text =  "\(temp) °\(unit)"
     }
     
-    //MARK: - WeatherData methods
-    func setCurrentWeatherData(_ data: WeatherDataModel) {
-        weatherData = data.current.temp
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm a"
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return }
-        let temperature = ViewController.convert(temperature: data.current.temp, to: unitType)
-        tempLabel.text = createTempString(temperature: temperature)
-        guard let sunset = data.current.sunset,
-              let sunrise = data.current.sunrise else { return }
+    private func uploadSunsetLabelData() {
         sunsetString = createSunString(for: "sunset")
-        sunriseString = createSunString(for: "sunrise")
-        sunsetString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(sunset))) ))
+        sunsetString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(currentWeatherViewModel?.sunset ?? 0))) ))
         sunsetLabel.attributedText = sunsetString
-        sunriseString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(sunrise)))))
+    }
+    
+    private func uploadSunriseLabelData() {
+        sunriseString = createSunString(for: "sunrise")
+        sunriseString.append(NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(currentWeatherViewModel?.sunrise ?? 0)))))
         sunriseLabel.attributedText = sunriseString
     }
     
     //MARK: - Measurement unit methods
     @objc private func onMeasurementUnitChanged() {
-        guard let weatherData = weatherData else { return }
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return }
-        let newTemperature = ViewController.convert(temperature: weatherData, to: unitType)
-        tempLabel.text = createTempString(temperature: newTemperature)
+        currentWeatherViewModel?.setNewTemperature()
+        uploadTempLabelData()
     }
 }
