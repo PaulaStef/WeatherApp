@@ -71,7 +71,7 @@ class LocationViewController: UIViewController {
     }
 }
 
-//MARK: - Search Country Method
+// MARK: - Search Country Method
 extension LocationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let nextField = self.view.viewWithTag(textField.tag + 1) as? UITextField {
@@ -86,7 +86,7 @@ extension LocationViewController: UITextFieldDelegate {
     }
 }
 
-//MARK: - TableView Methods
+// MARK: - TableView Methods
 extension LocationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let locationViewModel = locationViewModel else { return }

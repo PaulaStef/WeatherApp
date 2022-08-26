@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DefaultService: NSObject {
+final class DefaultService: NSObject {
     static let defaults = UserDefaults.standard
     
     static func getDefaultStringValue(forKey: String) -> String {
@@ -18,18 +18,11 @@ class DefaultService: NSObject {
         return defaults.integer(forKey: forKey)
     }
     
-    static func setDefaultValue(forKey: String, value: Any) {
-        defaults.set(value, forKey: forKey)
+    static func getDefaultDoubleValue(forKey: String) -> Double {
+        return defaults.double(forKey: forKey)
     }
     
-    static func convert(temperature: Double, to unitType: String) -> Double {
-        switch unitType {
-        case "Celsius":
-            return temperature
-        case "Fahrenheit":
-            return temperature * 9 / 5 + 32
-        default:
-            return temperature + 273.15
-        }
+    static func setDefaultValue(forKey: String, value: Any) {
+        defaults.set(value, forKey: forKey)
     }
 }

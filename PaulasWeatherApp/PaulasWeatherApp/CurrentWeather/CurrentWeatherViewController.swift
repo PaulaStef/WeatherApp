@@ -8,6 +8,7 @@
 import UIKit
 
 class CurrentWeatherViewController: UIViewController {
+    private let cityLabel = UILabel()
     private let tempLabel = UILabel()
     private let sunriseLabel = UILabel()
     private let sunsetLabel = UILabel()
@@ -40,6 +41,7 @@ class CurrentWeatherViewController: UIViewController {
         sunriseString = createSunString(for: "sunrise")
         setBackgroundImage()
         setTempLabel()
+        setCityLabel()
         setSunriseLabel()
         setSunsetLabel()
         view.backgroundColor = .systemRed
@@ -58,6 +60,9 @@ class CurrentWeatherViewController: UIViewController {
         currentWeatherViewModel.setSunrise = {
             self.uploadSunriseLabelData()
         }
+        currentWeatherViewModel.setCity = {
+            self.uploadCityLabelData()
+        }
     }
     
     private func setTempLabel() {
@@ -74,6 +79,21 @@ class CurrentWeatherViewController: UIViewController {
         ])
     }
     
+    private func setCityLabel() {
+        cityLabel.translatesAutoresizingMaskIntoConstraints = false
+        cityLabel.textAlignment = .center
+        cityLabel.font = .systemFont(ofSize: 50)
+        cityLabel.text = ""
+        cityLabel.backgroundColor = .clear
+        cityLabel.sizeToFit()
+        view.addSubview(cityLabel)
+        NSLayoutConstraint.activate([
+            cityLabel.bottomAnchor.constraint(equalTo: tempLabel.topAnchor,constant: -50),
+            cityLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            cityLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
     private func setSunsetLabel() {
         sunsetLabel.translatesAutoresizingMaskIntoConstraints = false
         sunsetLabel.textAlignment = .center
@@ -85,7 +105,7 @@ class CurrentWeatherViewController: UIViewController {
         NSLayoutConstraint.activate([
             sunsetLabel.leadingAnchor.constraint(equalTo: sunriseLabel.trailingAnchor,constant: 10),
             sunsetLabel.trailingAnchor.constraint(equalTo: tempLabel.trailingAnchor),
-            sunsetLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor)
+            sunsetLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor, constant: 10)
         ])
     }
     
@@ -99,7 +119,7 @@ class CurrentWeatherViewController: UIViewController {
         view.addSubview(sunriseLabel)
         NSLayoutConstraint.activate([
             sunriseLabel.leadingAnchor.constraint(equalTo: tempLabel.leadingAnchor),
-            sunriseLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor)
+            sunriseLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor, constant: 10)
         ])
     }
     
@@ -111,7 +131,7 @@ class CurrentWeatherViewController: UIViewController {
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
     }
     
-    //MARK: - Label text methods
+    // MARK: - Label text methods
     private func createSunString(for name: String) -> NSMutableAttributedString {
         let iconsSize = CGRect(x: 0, y: -5, width: 15, height: 15)
         let imageAttachment = NSTextAttachment()
@@ -122,11 +142,15 @@ class CurrentWeatherViewController: UIViewController {
         return atr
     }
     
-    //MARK: - Label Data methods
+    // MARK: - Label Data methods
     private func uploadTempLabelData() {
         let temp = Int(round(currentWeatherViewModel?.temperature ?? 0.0))
         let unit = String(currentWeatherViewModel?.unitType.first ?? " ")
         tempLabel.text =  "\(temp) °\(unit)"
+    }
+    
+    private func uploadCityLabelData() {
+        cityLabel.text = currentWeatherViewModel?.city
     }
     
     private func uploadSunsetLabelData() {
@@ -141,7 +165,7 @@ class CurrentWeatherViewController: UIViewController {
         sunriseLabel.attributedText = sunriseString
     }
     
-    //MARK: - Measurement unit methods
+    // MARK: - Measurement unit methods
     @objc private func onMeasurementUnitChanged() {
         currentWeatherViewModel?.setNewTemperature()
         uploadTempLabelData()

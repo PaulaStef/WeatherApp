@@ -32,15 +32,15 @@ class LocationViewModel: NSObject {
     }
     
     func filterBy(countryName: String) -> [String] {
-        if !countryName.isEmpty {
-            return countries.filter { $0.contains(countryName) }
-        } else {
+        if countryName.isEmpty {
             return countries
+        } else {
+            return countries.filter { $0.contains(countryName) }
         }
     }
     
     // MARK: - Location methods
-    func setMyLocation()  {
+    func setMyLocation() {
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.startUpdatingLocation()
@@ -55,11 +55,12 @@ class LocationViewModel: NSObject {
                 let placemarks = placemarks,
                 let lat = placemarks.first?.location?.coordinate.latitude,
                 let lon = placemarks.first?.location?.coordinate.longitude else { return }
-            self.setLocationDefaults(longitude: Float(lon), latitude: Float(lat))
+            DefaultService.setDefaultValue(forKey: "Location", value: country)
+            self.setLocationDefaults(longitude: lon, latitude: lat)
         }
     }
     
-    private func setLocationDefaults(longitude: Float, latitude: Float) {
+    private func setLocationDefaults(longitude: Double, latitude: Double) {
         DefaultService.setDefaultValue(forKey: "Latitude", value: latitude)
         DefaultService.setDefaultValue(forKey: "Longitude", value: longitude)
         self.notificationCenter.post(name: .locationChanged, object: nil)
@@ -69,6 +70,7 @@ class LocationViewModel: NSObject {
 extension LocationViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-        setLocationDefaults(longitude: Float(locValue.longitude), latitude: Float(locValue.latitude))
+        DefaultService.setDefaultValue(forKey: "Location", value: "MyLocation")
+        setLocationDefaults(longitude: locValue.longitude, latitude: locValue.latitude)
     }
 }

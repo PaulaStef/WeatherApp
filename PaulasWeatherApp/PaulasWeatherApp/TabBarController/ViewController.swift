@@ -27,7 +27,7 @@ class ViewController: UITabBarController {
         setTabBar()
         setActivityIndicator()
         bindView()
-        callToViewModelForUpdate()
+        getWeatherData()
     }
     
     private func bindView() {
@@ -63,7 +63,7 @@ class ViewController: UITabBarController {
     }
     
     //MARK: - Data methods
-    private func callToViewModelForUpdate() {
+    private func getWeatherData() {
         activityIndicator.startAnimating()
         weatherViewModel.getWeatherData()
     }
@@ -76,9 +76,9 @@ class ViewController: UITabBarController {
         }
     }
     
-    //MARK: - Location methods
+    // MARK: - Location methods
     @objc private func onLocationChanged() {
-        callToViewModelForUpdate()
+        getWeatherData()
     }
     
     func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {

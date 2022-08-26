@@ -27,8 +27,9 @@
         <!--Navigation Controller-->
         <scene sceneID="bgV-nu-wzG">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="p47-oh-8a5" sceneMemberID="viewController">
+                <navigationController id="p47-oh-8a5" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="D6W-tm-Euk">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

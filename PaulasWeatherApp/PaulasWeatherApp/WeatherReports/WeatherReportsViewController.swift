@@ -19,7 +19,7 @@ class WeatherReportsViewController: UIViewController {
     }()
     private var weatherReportsViewModel: WeatherReportsViewModel?
     
-    init(notificationCenter: NotificationCenter = .default, weatherReportsViewModel: WeatherReportsViewModel){
+    init(notificationCenter: NotificationCenter = .default, weatherReportsViewModel: WeatherReportsViewModel) {
         self.notificationCenter = notificationCenter
         self.weatherReportsViewModel = weatherReportsViewModel
         super.init(nibName: nil, bundle: nil)
@@ -44,7 +44,7 @@ class WeatherReportsViewController: UIViewController {
             return
         }
         weatherReportsViewModel.setHourlyWeather = {
-            self.refresh()
+            self.tableView.reloadData()
         }
     }
     
@@ -60,7 +60,12 @@ class WeatherReportsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
-        tableView.frame = view.bounds
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100) ])
     }
     
     private func setBackgroundImage() {
@@ -73,6 +78,7 @@ class WeatherReportsViewController: UIViewController {
     
     @objc func refresh() {
         self.tableView.reloadData()
+        weatherReportsViewModel?.removeDataAfterCurrentTime()
         self.refresher.endRefreshing()
     }
     
@@ -87,7 +93,7 @@ class WeatherReportsViewController: UIViewController {
     }
 }
 
-//MARK: - TableView methods
+// MARK: - TableView methods
 extension WeatherReportsViewController:  UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weatherReportsViewModel?.hourlyWeather.count ?? 0
@@ -98,7 +104,9 @@ extension WeatherReportsViewController:  UITableViewDataSource {
         let temperature = weatherReportsViewModel.setNewTemperature(row: indexPath.row)
         let tableCell = UITableViewCell(style: .value1, reuseIdentifier: "tableCell")
         tableCell.textLabel?.text = createTempString(temperature: temperature)
-        tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(weatherReportsViewModel.hourlyWeather[indexPath.row].dt))))
+        if indexPath.row < weatherReportsViewModel.hourlyWeather.count {
+            tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(weatherReportsViewModel.hourlyWeather[indexPath.row].dt))))
+        }
         tableCell.backgroundColor = .clear
         
         return tableCell

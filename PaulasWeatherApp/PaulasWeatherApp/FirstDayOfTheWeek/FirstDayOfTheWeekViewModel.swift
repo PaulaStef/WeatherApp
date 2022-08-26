@@ -24,7 +24,9 @@ class FirstDayOfTheWeekViewModel: NSObject {
     
     func firstDayOfTheWeekChanged() {
         defaults.set(row, forKey: "Selected first day row")
-        defaults.set(DaysOfWeek.allCases[row].rawValue, forKey: "First day of the week")
+        if row < DaysOfWeek.allCases.count {
+            defaults.set(DaysOfWeek.allCases[row].rawValue, forKey: "First day of the week")
+        }
         notificationCenter.post(name: .firstDayOfWeekChanged, object: nil)
     }
 }

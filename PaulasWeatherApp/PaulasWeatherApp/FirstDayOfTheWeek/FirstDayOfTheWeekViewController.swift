@@ -56,7 +56,7 @@ class FirstDayOfTheWeekViewController: UIViewController {
     }
 }
 
-//MARK: - PickerView methods
+// MARK: - PickerView methods
 extension FirstDayOfTheWeekViewController: UIPickerViewDataSource  {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1

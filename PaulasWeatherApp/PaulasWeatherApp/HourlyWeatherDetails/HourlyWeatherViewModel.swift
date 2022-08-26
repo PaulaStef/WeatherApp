@@ -15,7 +15,7 @@ class HourlyWeatherViewModel: NSObject {
     
     init(for hourlyWeather: WeatherDetails) {
         self.weatherDetails = hourlyWeather
-        temperature = Int(round(DefaultService.convert(temperature: weatherDetails.temp , to: unitType)))
+        temperature = Int(round(ConversionService.convert(temperature: weatherDetails.temp , to: unitType)))
         super.init()
     }
     
@@ -44,6 +44,6 @@ class HourlyWeatherViewModel: NSObject {
     
     func setNewTemperature() {
         unitType = DefaultService.getDefaultStringValue(forKey: "Unit of measurement")
-        temperature = Int(round(DefaultService.convert(temperature: weatherDetails.temp , to: unitType)))
+        temperature = Int(round(ConversionService.convert(temperature: weatherDetails.temp , to: unitType)))
     }
 }

@@ -89,7 +89,7 @@ class HourlyWeatherDetailsViewController: UIViewController {
     }
 }
 
-//MARK: - CollectionView methods
+// MARK: - CollectionView methods
 extension HourlyWeatherDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? HourlyWeatherDetailsCell

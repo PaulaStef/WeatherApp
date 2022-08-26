@@ -9,7 +9,7 @@ import Foundation
 
 class UnitOfMeasurementViewModel: NSObject {
     private let notificationCenter: NotificationCenter
-    var row : Int
+    var row: Int
     
     init(notificationCenter: NotificationCenter = .default) {
         self.notificationCenter = notificationCenter
@@ -23,7 +23,9 @@ class UnitOfMeasurementViewModel: NSObject {
     
     func unitTypeChanged() {
         DefaultService.setDefaultValue(forKey: "Selected unit row", value: row)
-        DefaultService.setDefaultValue(forKey: "Unit of measurement", value: UnitType.allCases[row].rawValue)
+        if row < UnitType.allCases.count {
+            DefaultService.setDefaultValue(forKey: "Unit of measurement", value: UnitType.allCases[row].rawValue)
+        }
         notificationCenter.post(name: .unitTypeChanged, object: nil)
     }
 }

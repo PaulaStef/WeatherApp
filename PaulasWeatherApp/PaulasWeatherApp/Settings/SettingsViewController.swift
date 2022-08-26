@@ -32,6 +32,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .unitTypeChanged, object: nil)
         notificationCenter.addObserver(self, selector: #selector(onFirstDayOfWeekChanged), name: .firstDayOfWeekChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(onLocationChanged), name: .locationChanged, object: nil)
         setBackgroundImage()
         setTableView()
         settingsViewModel?.lastSelectedCell = tableView.indexPathsForSelectedRows?[0]
@@ -65,6 +66,12 @@ class SettingsViewController: UIViewController {
         guard let index = settingsViewModel?.lastSelectedCell else { return }
         let day = DefaultService.getDefaultStringValue(forKey: "First day of the week")
         tableView.cellForRow(at: index)?.detailTextLabel?.text = day
+    }
+    
+    @objc func onLocationChanged() {
+        guard let index = settingsViewModel?.lastSelectedCell else { return }
+        let location = DefaultService.getDefaultStringValue(forKey: "Location")
+        tableView.cellForRow(at: index)?.detailTextLabel?.text = location
     }
 }
 

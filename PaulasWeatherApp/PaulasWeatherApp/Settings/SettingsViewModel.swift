@@ -20,24 +20,23 @@ class SettingsViewModel: NSObject {
     }
     
     func settingWasSelected(navigationController: UINavigationController) {
-        guard let firstDayOfWeekViewController = firstDayOfWeekViewController else {
-            return
-        }
-        guard let unitOfMeasurementViewController = unitOfMeasurementViewController else {
-            return
-        }
-        guard let locationViewController = locationViewController else {
-            return
-        }
-        switch SettingsType.allCases[lastSelectedCell?.row ?? 0].rawValue {
-        case "First day of the week":
-            navigationController.pushViewController(firstDayOfWeekViewController, animated: false)
-        case "Unit of measurement":
-            navigationController.pushViewController(unitOfMeasurementViewController, animated: false)
-        case "Location":
-            navigationController.pushViewController(locationViewController, animated: false)
-        default:
-            print("You have done something wrong")
+        guard let firstDayOfWeekViewController = firstDayOfWeekViewController,
+              let locationViewController = locationViewController,
+              let unitOfMeasurementViewController = unitOfMeasurementViewController,
+              let lastSelectedCell = lastSelectedCell else {
+                  return
+              }
+        if lastSelectedCell.row < SettingsType.allCases.count {
+            switch SettingsType.allCases[lastSelectedCell.row ].rawValue {
+            case "First day of the week":
+                navigationController.pushViewController(firstDayOfWeekViewController, animated: false)
+            case "Unit of measurement":
+                navigationController.pushViewController(unitOfMeasurementViewController, animated: false)
+            case "Location":
+                navigationController.pushViewController(locationViewController, animated: false)
+            default:
+                print("You have done something wrong")
+            }
         }
     }
 }

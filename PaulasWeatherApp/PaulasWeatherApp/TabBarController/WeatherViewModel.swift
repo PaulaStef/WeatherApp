@@ -21,15 +21,14 @@ class WeatherViewModel: NSObject {
         super.init()
         weatherService = WeatherService()
     }
-    //MARK: - Get data methods
+    // MARK: - Get data methods
     func getWeatherData() {
-        let time = Int(NSDate().timeIntervalSince1970 - 100)
-        let latitude = defaults.float(forKey: "Latitude")
-        let longitude = defaults.float(forKey: "Longitude")
+        let latitude = DefaultService.getDefaultDoubleValue(forKey: "Latitude")
+        let longitude = DefaultService.getDefaultDoubleValue(forKey: "Longitude")
         guard let weatherService = weatherService else {
             return
         }
-        weatherService.getWeatherData(lat: latitude, lon: longitude, time: time) { [weak self] data, response, error in
+        weatherService.getWeatherData(lat: latitude, lon: longitude) { [weak self] data, response, error in
             guard let data = data else {
                 return
             }

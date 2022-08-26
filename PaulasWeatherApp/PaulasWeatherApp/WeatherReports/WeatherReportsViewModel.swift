@@ -18,25 +18,33 @@ class WeatherReportsViewModel: NSObject {
     var setHourlyWeather: (() -> ()) = {}
     
     func setHourlyData(hourlyWeather: [WeatherDetails] ) {
+        self.hourlyWeather = hourlyWeather
+        removeDataAfterCurrentTime()
+    }
+    
+    func removeDataAfterCurrentTime() {
         let date = Date()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        self.hourlyWeather.removeAll()
+        var hourlyWeatherCopy: [WeatherDetails] = []
         for item in hourlyWeather {
             let comingFromTheServer = TimeInterval(item.dt)
             let calendar2 = Calendar.current
             let date2 = Date(timeIntervalSince1970: comingFromTheServer)
             let hourWeather = calendar2.component(.hour, from: date2)
-            if hour - hourWeather > 0 {
-                if !self.hourlyWeather.contains(where: { $0.dt == item.dt }){
-                    self.hourlyWeather.append(item)
-                }
+            if hour - hourWeather < 0, !hourlyWeatherCopy.contains(where: { $0.dt == item.dt }) {
+                hourlyWeatherCopy.append(item)
             }
         }
+        self.hourlyWeather = hourlyWeatherCopy
     }
     
     func setNewTemperature(row: Int) -> Double {
         unitType = DefaultService.getDefaultStringValue(forKey: "Unit of measurement")
-        return DefaultService.convert(temperature: hourlyWeather[row].temp, to: unitType)
+        if row < hourlyWeather.count {
+            return ConversionService.convert(temperature: hourlyWeather[row].temp, to: unitType)
+        } else {
+            return 0.0
+        }
     }
 }
