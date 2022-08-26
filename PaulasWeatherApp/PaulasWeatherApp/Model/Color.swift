@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIColor {
-    static var todayNavigationBackground: UIColor {
+    static var navigationBackground: UIColor {
         UIColor(named: "TodayNavigationBackground") ?? .secondarySystemBackground
     }
 }

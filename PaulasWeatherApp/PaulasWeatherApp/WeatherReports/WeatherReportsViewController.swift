@@ -8,29 +8,44 @@
 import UIKit
 
 class WeatherReportsViewController: UIViewController {
-    private var hourlyWeather: [WeatherDetails] = []
     private let tableView = UITableView()
     private var refresher = UIRefreshControl()
     private let backgroundImage = UIImageView()
     private let notificationCenter: NotificationCenter
-    private let defaults = UserDefaults.standard
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh:mm a"
+        return formatter
+    }()
+    private var weatherReportsViewModel: WeatherReportsViewModel?
+    
+    init(notificationCenter: NotificationCenter = .default, weatherReportsViewModel: WeatherReportsViewModel) {
+        self.notificationCenter = notificationCenter
+        self.weatherReportsViewModel = weatherReportsViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .temperatureChanged, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(onMeasurementUnitChanged), name: .unitTypeChanged, object: nil)
+        bindViewModel()
         setBackgroundImage()
         setTableView()
         setRefresher()
         refresh()
     }
     
-    init(notificationCenter: NotificationCenter = .default){
-        self.notificationCenter = notificationCenter
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private func bindViewModel() {
+        guard let weatherReportsViewModel = weatherReportsViewModel else {
+            return
+        }
+        weatherReportsViewModel.setHourlyWeather = {
+            self.tableView.reloadData()
+        }
     }
     
     private func setRefresher() {
@@ -45,7 +60,12 @@ class WeatherReportsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
-        tableView.frame = view.bounds
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100) ])
     }
     
     private func setBackgroundImage() {
@@ -56,33 +76,15 @@ class WeatherReportsViewController: UIViewController {
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
     }
     
-    func setHourlyData( hourlyWeather: [WeatherDetails] ) {
-        let date = Date()
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-        self.hourlyWeather.removeAll()
-        for item in hourlyWeather {
-            let comingFromTheServer = TimeInterval(item.dt)
-            let calendar2 = Calendar.current
-            let date2 = Date(timeIntervalSince1970: comingFromTheServer)
-            let hourWeather = calendar2.component(.hour, from: date2)
-            if hour - hourWeather > 0 {
-                if !self.hourlyWeather.contains(where: { $0.dt == item.dt }){
-                    self.hourlyWeather.append(item)
-                }
-            }
-        }
-    }
-    
     @objc func refresh() {
         self.tableView.reloadData()
+        weatherReportsViewModel?.removeDataAfterCurrentTime()
         self.refresher.endRefreshing()
     }
     
     private func createTempString(temperature: Double) -> String {
         let temp = Int(round(temperature))
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return "Error" }
-        let unit = String(unitType.first ?? " ")
+        let unit = String(weatherReportsViewModel?.unitType.first ?? " ")
         return "\(temp) °\(unit)"
     }
     
@@ -91,20 +93,20 @@ class WeatherReportsViewController: UIViewController {
     }
 }
 
-//MARK: - TableView methods
+// MARK: - TableView methods
 extension WeatherReportsViewController:  UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return hourlyWeather.count
+        return weatherReportsViewModel?.hourlyWeather.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm a"
+        guard let weatherReportsViewModel = weatherReportsViewModel else { return UITableViewCell() }
+        let temperature = weatherReportsViewModel.setNewTemperature(row: indexPath.row)
         let tableCell = UITableViewCell(style: .value1, reuseIdentifier: "tableCell")
-        guard let unitType = defaults.string(forKey: "Unit of measurement") else { return UITableViewCell() }
-        let temperature = ViewController.convert(temperature: hourlyWeather[indexPath.row].temp, to: unitType)
         tableCell.textLabel?.text = createTempString(temperature: temperature)
-        tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(hourlyWeather[indexPath.row].dt))))
+        if indexPath.row < weatherReportsViewModel.hourlyWeather.count {
+            tableCell.detailTextLabel?.attributedText = NSAttributedString(string: dateFormatter.string(from: Date(timeIntervalSince1970: Double(weatherReportsViewModel.hourlyWeather[indexPath.row].dt))))
+        }
         tableCell.backgroundColor = .clear
         
         return tableCell
@@ -113,8 +115,9 @@ extension WeatherReportsViewController:  UITableViewDataSource {
 
 extension WeatherReportsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let weatherDetails = hourlyWeather[indexPath.row]
-        let viewController = HourlyWeatherDetailsViewController(for: weatherDetails)
+        guard let weatherDetails = weatherReportsViewModel?.hourlyWeather[indexPath.row] else { return }
+        let viewModel = HourlyWeatherViewModel(for: weatherDetails)
+        let viewController = HourlyWeatherDetailsViewController(hourlyWeatherViewModel: viewModel)
         guard let navigationController = navigationController else { return }
         navigationController.pushViewController(viewController, animated: false)
         tableView.deselectRow(at: indexPath, animated: true)

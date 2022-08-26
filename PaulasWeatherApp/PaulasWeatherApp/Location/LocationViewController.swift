@@ -5,33 +5,16 @@
 //  Created by Stef, Paula on 8/4/22.
 //
 import UIKit
-import CoreLocation
 
 class LocationViewController: UIViewController {
     private let tableView = UITableView()
     private let findCountryField = UITextField()
     private let backgroundImage = UIImageView()
-    private let defaults = UserDefaults.standard
-    private let notificationCenter: NotificationCenter
-    private var latitude: Float
-    private var longitude: Float
-    private let locationManager = { () -> CLLocationManager in
-        let manager = CLLocationManager()
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        manager.requestWhenInUseAuthorization()
-        manager.distanceFilter = 100.0
-        return manager
-    }()
+    private let locationViewModel: LocationViewModel?
     var displayCountries: [String]  = []
-    private let countries = NSLocale.isoCountryCodes.map { (code:String) -> String in
-        let id = NSLocale.localeIdentifier(fromComponents: [NSLocale.Key.countryCode.rawValue: code])
-        return NSLocale(localeIdentifier: "en_US").displayName(forKey: NSLocale.Key.identifier, value: id) ?? "Country not found for code: \(code)"
-    }
     
-    init(notificationCenter: NotificationCenter = .default) {
-        self.notificationCenter = notificationCenter
-        latitude = defaults.float(forKey: "Latitude")
-        longitude = defaults.float(forKey: "Longitude")
+    init(notificationCenter: NotificationCenter = .default, locationViewModel: LocationViewModel) {
+        self.locationViewModel = locationViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,7 +26,7 @@ class LocationViewController: UIViewController {
         super.viewDidLoad()
         setBackgroundImage()
         navigationItem.title = "Location"
-        displayCountries = countries
+        displayCountries = locationViewModel?.countries ?? []
         setFindCountryField()
         setTableView()
     }
@@ -86,33 +69,16 @@ class LocationViewController: UIViewController {
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         backgroundImage.bounds = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
     }
-    
-    func filterBy(countryName: String) {
-        if !countryName.isEmpty {
-            displayCountries = countries.filter { $0.contains(countryName) }
-        } else {
-            displayCountries = countries
-        }
-    }
 }
 
-//MARK: - Location Methods
-extension LocationViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-        defaults.set(Float(locValue.latitude), forKey: "Latitude")
-        defaults.set(Float(locValue.longitude), forKey: "Longitude")
-        notificationCenter.post(name: .locationChanged, object: nil)
-    }
-}
-
+// MARK: - Search Country Method
 extension LocationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let nextField = self.view.viewWithTag(textField.tag + 1) as? UITextField {
             nextField.becomeFirstResponder()
         } else {
             guard let text = textField.text else { return false }
-            filterBy(countryName: text)
+            displayCountries = locationViewModel?.filterBy(countryName: text) ?? []
             tableView.reloadData()
             textField.resignFirstResponder()
         }
@@ -120,25 +86,14 @@ extension LocationViewController: UITextFieldDelegate {
     }
 }
 
-//MARK: - TableView Methods
+// MARK: - TableView Methods
 extension LocationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0, CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.startUpdatingLocation()
+        guard let locationViewModel = locationViewModel else { return }
+        if indexPath.row == 0 {
+            locationViewModel.setMyLocation()
         } else if indexPath.row - 1 < displayCountries.count {
-            locationManager.stopUpdatingLocation()
-            let address = displayCountries[indexPath.row - 1]
-            let geoCoder = CLGeocoder()
-            geoCoder.geocodeAddressString(address) { (placemarks, error) in
-                guard
-                    let placemarks = placemarks,
-                    let lat = placemarks.first?.location?.coordinate.latitude,
-                    let lon = placemarks.first?.location?.coordinate.longitude else { return }
-                self.defaults.set(Float(lat), forKey: "Latitude")
-                self.defaults.set(Float(lon), forKey: "Longitude")
-                self.notificationCenter.post(name: .locationChanged, object: nil)
-            }
+            locationViewModel.setLocationFor(country: displayCountries[indexPath.row - 1])
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

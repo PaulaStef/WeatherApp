@@ -8,24 +8,35 @@
 import UIKit
 
 class ViewController: UITabBarController {
-        
-    private let weatherVC = CurrentWeatherViewController()
-    private let metricsVC = WeatherReportsViewController()
-    private let settingsVC = SettingsViewController()
+    private let weatherViewModel = WeatherViewModel()
+    private let currentWeatherVM = CurrentWeatherViewModel()
+    private let weatherReportsVM = WeatherReportsViewModel()
+    private let settingsVM = SettingsViewModel(firstDayOfTheWeekViewModel: FirstDayOfTheWeekViewModel(), unitOfMeasurementViewModel: UnitOfMeasurementViewModel(), locationViewModel: LocationViewModel())
+    private let unitOfMeasurementVM = UnitOfMeasurementViewModel()
+    private let locationVM = LocationViewModel()
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let defaults = UserDefaults.standard
     private let notificationCenter = NotificationCenter.default
     
     deinit {
         notificationCenter.removeObserver(self)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         notificationCenter.addObserver(self, selector: #selector(onLocationChanged), name: .locationChanged, object: nil)
         setTabBar()
         setActivityIndicator()
+        bindView()
         getWeatherData()
+    }
+    
+    private func bindView() {
+        weatherViewModel.weatherDataUpdated = {
+            DispatchQueue.main.async {
+                self.updateViewControllersData()
+                self.activityIndicator.stopAnimating()
+            }
+        }
     }
     
     private func setActivityIndicator() {
@@ -35,7 +46,10 @@ class ViewController: UITabBarController {
     }
     
     private func setTabBar() {
-        setViewControllers([weatherVC, metricsVC, settingsVC ], animated: false)
+        let weatherVC = CurrentWeatherViewController(currentWeatherViewModel: currentWeatherVM)
+        let metricsVC = WeatherReportsViewController(weatherReportsViewModel: weatherReportsVM)
+        let settingsVC = SettingsViewController(settingsViewModel: settingsVM)
+        setViewControllers([weatherVC, metricsVC, settingsVC], animated: false)
         guard let settingsImage = UIImage(named: "settings") else { return }
         let size = CGSize(width: 30, height: 30)
         guard let items = tabBar.items else { return }
@@ -47,31 +61,22 @@ class ViewController: UITabBarController {
         }
         tabBar.tintColor = .black
     }
-        
+    
+    //MARK: - Data methods
     private func getWeatherData() {
         activityIndicator.startAnimating()
-        let time = Int(NSDate().timeIntervalSince1970 - 100)
-        let latitude = defaults.float(forKey: "Latitude")
-        let longitude = defaults.float(forKey: "Longitude")
-        WeatherService.getWeatherData(lat: latitude, lon: longitude, time: time) { data, response, error in
-            let decoder = JSONDecoder()
-            guard let data = data else {
-                return
-            }
-            do {
-                let decoded = try decoder.decode(WeatherDataModel.self, from: data)
-                DispatchQueue.main.async { [self] in
-                    metricsVC.setHourlyData(hourlyWeather: decoded.hourly)
-                    metricsVC.refresh()
-                    weatherVC.setCurrentWeatherData(decoded)
-                    activityIndicator.stopAnimating()
-                }
-            } catch {
-                print("Failed to decode JSON \(error)")
-            }
+        weatherViewModel.getWeatherData()
+    }
+    
+    private func updateViewControllersData() {
+        guard let data = weatherViewModel.weatherData else { return }
+        DispatchQueue.main.async {
+            self.currentWeatherVM.setCurrentWeatherData(data)
+            self.weatherReportsVM.setHourlyData(hourlyWeather: data.hourly)
         }
     }
     
+    // MARK: - Location methods
     @objc private func onLocationChanged() {
         getWeatherData()
     }
@@ -92,16 +97,5 @@ class ViewController: UITabBarController {
         UIGraphicsEndImageContext()
         
         return newImage
-    }
-    
-    static func convert(temperature: Double, to unitType: String) -> Double {
-        switch unitType {
-        case "Celsius":
-            return temperature
-        case "Fahrenheit":
-            return temperature * 9 / 5 + 32
-        default:
-            return temperature + 273.15
-        }
     }
 }

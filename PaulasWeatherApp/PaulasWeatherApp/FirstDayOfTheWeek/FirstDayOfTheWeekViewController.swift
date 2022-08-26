@@ -1,35 +1,28 @@
 //
-//  FirstDayOfTheWeekController.swift
+//  FirstDayOfTheWeekViewController.swift
 //  PaulasWeatherApp
 //
 //  Created by Stef, Paula on 8/4/22.
 //
 import UIKit
 
-class FirstDayOfTheWeekController: UIViewController {
-    enum DaysOfWeek: String, CaseIterable {
-        case mo = "Monday"
-        case tu = "Tuesday"
-        case we = "Wednesday"
-        case thu = "Thursday"
-        case fr = "Friday"
-        case sa = "Saturday"
-        case su = "Sunday"
-    }
+enum DaysOfWeek: String, CaseIterable {
+    case mo = "Monday"
+    case tu = "Tuesday"
+    case we = "Wednesday"
+    case thu = "Thursday"
+    case fr = "Friday"
+    case sa = "Saturday"
+    case su = "Sunday"
+}
+
+class FirstDayOfTheWeekViewController: UIViewController {
     private let picker = UIPickerView()
-    private let notificationCenter: NotificationCenter
-    private let defaults = UserDefaults.standard
     private let backgroundImage = UIImageView()
-    private var firstDay: DaysOfWeek {
-        didSet{
-            notificationCenter.post(name: .firstDayOfWeekChanged, object: nil)
-        }
-    }
+    private var firstDayOfTheWeekViewModel: FirstDayOfTheWeekViewModel?
     
-    init(notificationCenter: NotificationCenter = .default) {
-        self.notificationCenter = notificationCenter
-        let dayName = defaults.string(forKey: "First day of the week") ?? "Monday"
-        firstDay = DaysOfWeek.init(rawValue: dayName) ?? DaysOfWeek.mo
+    init(firstDayOfTheWeekViewModel: FirstDayOfTheWeekViewModel) {
+        self.firstDayOfTheWeekViewModel = firstDayOfTheWeekViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -51,8 +44,7 @@ class FirstDayOfTheWeekController: UIViewController {
         picker.center = self.view.center
         picker.backgroundColor = .clear
         picker.frame = view.bounds
-        let row = defaults.integer(forKey: "Selected first day row")
-        picker.selectRow(row, inComponent: 0, animated: false)
+        picker.selectRow(firstDayOfTheWeekViewModel?.row ?? 0, inComponent: 0, animated: false)
     }
     
     private func setBackgroundImage() {
@@ -64,8 +56,8 @@ class FirstDayOfTheWeekController: UIViewController {
     }
 }
 
-//MARK: - PickerView methods
-extension FirstDayOfTheWeekController: UIPickerViewDataSource  {
+// MARK: - PickerView methods
+extension FirstDayOfTheWeekViewController: UIPickerViewDataSource  {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -75,7 +67,7 @@ extension FirstDayOfTheWeekController: UIPickerViewDataSource  {
     }
 }
 
-extension FirstDayOfTheWeekController: UIPickerViewDelegate {
+extension FirstDayOfTheWeekViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if row <= DaysOfWeek.allCases.count {
             return DaysOfWeek.allCases[row].rawValue
@@ -85,9 +77,8 @@ extension FirstDayOfTheWeekController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let selectedRow = pickerView.selectedRow(inComponent: component)
-        defaults.set(selectedRow, forKey: "Selected first day row")
-        defaults.set(DaysOfWeek.allCases[selectedRow].rawValue, forKey: "First day of the week")
-        firstDay = DaysOfWeek.allCases[selectedRow]
+        guard let firstDayOfTheWeekViewModel = firstDayOfTheWeekViewModel else { return }
+        firstDayOfTheWeekViewModel.row = pickerView.selectedRow(inComponent: component)
+        firstDayOfTheWeekViewModel.firstDayOfTheWeekChanged()
     }
 }
